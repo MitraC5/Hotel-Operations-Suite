@@ -1,0 +1,491 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+.wrap{display:flex;justify-content:center;padding:24px 0;background:var(--color-background-tertiary);border-radius:var(--border-radius-lg)}
+.phone{width:375px;height:812px;background:#fff;border-radius:40px;overflow:hidden;position:relative;border:8px solid #1a1a1a;box-shadow:0 0 0 1px #333,0 40px 80px rgba(0,0,0,.4)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s}
+.screen.off-right{transform:translateX(100%);opacity:0;pointer-events:none}
+.screen.off-left{transform:translateX(-30%);opacity:0;pointer-events:none}
+.sbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;background:#fff}
+.sbar-t{font-size:15px;font-weight:700;color:#000}
+.sbar-r{font-size:12px;color:#000}
+.bsafe{height:34px;flex-shrink:0;background:#fff}
+.home-hdr{padding:6px 20px 0;flex-shrink:0}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between}
+.staff-name{font-size:20px;font-weight:800;color:#0a0a0a;letter-spacing:-.5px}
+.avatar{width:44px;height:44px;border-radius:50%;background:#0a0a0a;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.signin-row{display:flex;align-items:center;gap:7px;margin-top:7px;cursor:pointer}
+.tog-track{width:38px;height:22px;border-radius:99px;background:#16a34a;position:relative;transition:background .2s;flex-shrink:0}
+.tog-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog-track.on .tog-thumb{transform:translateX(16px)}
+.tog-lbl{font-size:12px;font-weight:700;color:#16a34a}
+.divider{height:1px;background:#f0f0f0;margin:10px 0 0;flex-shrink:0}
+.tab-bar{display:flex;padding:0 20px;flex-shrink:0;background:#fff}
+.tab-btn{flex:1;padding:8px 0;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;color:#a1a1aa;cursor:pointer;position:relative;transition:color .2s}
+.tab-btn.on{color:#0a0a0a}
+.tab-btn.on::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2.5px;background:#0a0a0a;border-radius:99px}
+
+/* 2×5 GRID */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,1fr);gap:8px;padding:10px 14px;flex:1;min-height:0}
+.sq-card{border-radius:16px;border:1.5px solid #e4e4e7;background:#fff;display:flex;flex-direction:column;padding:12px 14px;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden;min-height:0}
+.sq-card:active{transform:scale(.96)}
+.sq-card.urgent{border-color:#ef4444;box-shadow:0 0 0 1px #ef4444}
+.sq-card.done-c{background:#fafafa;border-color:#ebebeb}
+.blink{position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:50%;background:#ef4444;animation:blink 1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(1.7)}}
+.room-big{font-size:26px;font-weight:800;color:#0a0a0a;letter-spacing:-1px;line-height:1}
+.sq-icons{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.sq-ico{font-size:20px;line-height:1}
+.done-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:800}
+
+/* TOPBAR */
+.topbar{padding:0 16px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid #f0f0f0}
+.back{width:34px;height:34px;border-radius:50%;background:#f4f4f5;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:15px;color:#0a0a0a}
+.topbar-big{font-size:22px;font-weight:800;color:#0a0a0a;letter-spacing:-.7px}
+.topbar-sub{font-size:12px;color:#888;margin-top:1px}
+.content{flex:1;overflow-y:auto;overflow-x:hidden}
+.content::-webkit-scrollbar{display:none}
+.sec-lbl{font-size:10px;font-weight:800;color:#a1a1aa;letter-spacing:.8px;text-transform:uppercase;padding:12px 16px 6px}
+.dtask{background:#fff;border:1px solid #e4e4e7;border-radius:14px;padding:13px 15px;margin:0 16px 8px}
+.dtask.urgent{border-color:#ef4444}
+.dtask-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.dtask-name{font-size:14px;font-weight:700;color:#0a0a0a}
+.status-tag{font-size:10px;font-weight:700;border-radius:99px;padding:3px 8px}
+.st-pend{background:#fef9c3;color:#854d0e;border:1px solid #fef08a}
+.st-done{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.dtask-sla{font-size:12px;font-weight:600;color:#dc2626}
+.dtask-sla.ok{color:#888}
+.bpane{padding:10px 16px 0;border-top:1px solid #f0f0f0;flex-shrink:0;background:#fff;display:flex;gap:8px;align-items:center}
+.bp-btn{flex:1;padding:13px;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.bp-prim{background:#0a0a0a;color:#fff}
+.bp-ghost{background:#f4f4f5;color:#0a0a0a;border:1px solid #e4e4e7}
+.bp-icon{width:46px;height:46px;border:1.5px solid #e4e4e7;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px}
+.bp-icon.on{border-color:#0a0a0a;background:#0a0a0a}
+.bp-icon.off{opacity:.3;pointer-events:none}
+.prog-row{display:flex;align-items:center;gap:10px;padding:7px 16px;flex-shrink:0}
+.prog-label{font-size:11px;font-weight:700;color:#888;white-space:nowrap}
+.prog-track{flex:1;height:3px;background:#f0f0f0;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:#0a0a0a;border-radius:99px;transition:width .4s}
+.cam-dark{background:#0a0a0a}
+.cam-dark .back{background:rgba(255,255,255,.1);color:#fff}
+.cam-dark .topbar-big{color:#fff}
+.cam-dark .prog-label{color:#666}
+.cam-dark .prog-track{background:#333}
+.cam-bg{flex:1;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.finder{width:220px;height:150px;border:2px solid rgba(255,255,255,.5);border-radius:11px;position:relative}
+.fc{position:absolute;width:15px;height:15px;border-color:#fff;border-style:solid}
+.fc.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.fc.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.fc.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.fc.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.cam-hint{color:rgba(255,255,255,.45);font-size:13px;font-weight:500}
+.shutter{width:60px;height:60px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.3);cursor:pointer;transition:transform .1s}
+.shutter:active{transform:scale(.88)}
+.cap-bg{flex:1;background:#111;display:flex;align-items:center;justify-content:center;position:relative}
+.door-card{width:200px;border-radius:14px;background:#1c1c1e;border:1px solid #2c2c2e;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.door-n{font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px}
+.door-lbl{font-size:10px;color:#555;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.stamp{position:absolute;bottom:14px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:600;padding:4px 10px;border-radius:7px}
+.media-section{padding:0 16px 10px}
+.media-sub-lbl{font-size:12px;font-weight:700;color:#3f3f46;margin-bottom:5px;margin-top:8px}
+.media-sub-lbl:first-of-type{margin-top:0}
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.media-add{aspect-ratio:1;background:#f9f9f9;border:1.5px dashed #d4d4d8;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:2px}
+.media-add:active{background:#f0f0f0}
+.add-ico{font-size:17px}
+.add-lbl{font-size:8px;font-weight:700;color:#a1a1aa;letter-spacing:.3px;text-transform:uppercase}
+.thumb{aspect-ratio:1;background:#1c1c1e;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.sub-div{height:1px;background:#f4f4f5;margin:8px 0}
+.sheet-wrap{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet-wrap.open{opacity:1;pointer-events:all}
+.sheet{background:#fff;border-radius:22px 22px 0 0;padding:18px 18px 36px;width:100%;transform:translateY(16px);transition:transform .25s}
+.sheet-wrap.open .sheet{transform:translateY(0)}
+.sheet-title{font-size:16px;font-weight:800;color:#0a0a0a;margin-bottom:2px}
+.sheet-sub{font-size:12px;color:#888;margin-bottom:12px}
+.sti{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #e4e4e7;border-radius:13px;margin-bottom:7px;cursor:pointer}
+.sti:active{background:#f9f9f9}
+.sti-l{display:flex;align-items:center;gap:9px}
+.sti-ico{font-size:18px}
+.sti-name{font-size:14px;font-weight:700;color:#0a0a0a}
+.sti-sla{font-size:11px;font-weight:600;margin-top:1px}
+.popup-wrap{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+.popup-wrap.open{opacity:1;pointer-events:all}
+.popup{background:#fff;border-radius:22px 22px 0 0;padding:24px 18px 36px;width:100%;transform:translateY(16px);transition:transform .25s}
+.popup-wrap.open .popup{transform:translateY(0)}
+.popup-title{font-size:17px;font-weight:800;color:#0a0a0a;margin-bottom:5px}
+.popup-body{font-size:14px;color:#71717a;line-height:1.5;margin-bottom:20px}
+.popup-btns{display:flex;flex-direction:column;gap:8px}
+.ppbtn{padding:14px;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.ppbtn-ok{background:#0a0a0a;color:#fff}
+.ppbtn-cancel{background:#f4f4f5;color:#0a0a0a}
+#toast{position:absolute;top:54px;left:50%;transform:translateX(-50%) translateY(-8px);background:#0a0a0a;color:#fff;font-size:12px;font-weight:600;border-radius:99px;padding:9px 18px;opacity:0;pointer-events:none;transition:all .22s;z-index:100;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+
+<div class="wrap"><div class="phone">
+
+<div class="screen" id="S-home" style="display:flex;flex-direction:column">
+  <div class="sbar"><span class="sbar-t" id="clk">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="home-hdr">
+    <div class="hdr-top">
+      <div><div class="staff-name">Priya Sharma</div>
+        <div class="signin-row" onclick="toggleSignin()">
+          <div class="tog-track on" id="tog"><div class="tog-thumb"></div></div>
+          <span class="tog-lbl" id="tog-lbl">Signed in</span>
+        </div>
+      </div>
+      <div class="avatar">PS</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tb-pend" onclick="setTab('pend')">Pending</button>
+    <button class="tab-btn" id="tb-done" onclick="setTab('done')">Completed</button>
+  </div>
+  <div class="cards-grid" id="home-grid"></div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="sheet-wrap" id="sheet" onclick="sheetTap(event)">
+  <div class="sheet">
+    <div class="sheet-title" id="sheet-title">Room</div>
+    <div class="sheet-sub">Select a task</div>
+    <div id="sheet-tasks"></div>
+  </div>
+</div>
+
+<div class="screen off-right" id="S-detail">
+  <div class="sbar"><span class="sbar-t" id="clk2">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="goHome()">←</button>
+    <div><div class="topbar-big" id="d-room">302</div><div class="topbar-sub" id="d-type">Suite</div></div>
+  </div>
+  <div class="content"><div id="detail-content" style="padding-bottom:8px"></div></div>
+  <div class="bpane" id="detail-pane"></div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-camera">
+  <div class="sbar cam-dark"><span class="sbar-t" style="color:#fff">9:41</span><span class="sbar-r" style="color:#fff">▲●▮▮</span></div>
+  <div class="topbar cam-dark"><button class="back" onclick="nav('S-detail','left')" style="background:rgba(255,255,255,.1);color:#fff">←</button>
+    <div><div class="topbar-big" style="color:#fff;font-size:17px">Verify Room</div></div>
+  </div>
+  <div class="prog-row cam-dark"><span class="prog-label">Step 1 of 3</span><div class="prog-track"><div class="prog-fill" style="width:33%"></div></div></div>
+  <div class="cam-bg">
+    <div class="finder"><div class="fc tl"></div><div class="fc tr"></div><div class="fc bl"></div><div class="fc br"></div></div>
+    <div class="cam-hint">Point at door number plate</div>
+    <div class="shutter" onclick="captureRoom()"></div>
+  </div>
+  <div class="bpane" style="background:#0a0a0a;border-top:1px solid #222">
+    <button class="bp-btn" style="background:rgba(255,255,255,.08);color:#fff;border-radius:13px;border:1px solid #333" onclick="nav('S-detail','left')">Cancel</button>
+  </div>
+  <div class="bsafe" style="background:#0a0a0a"></div>
+</div>
+
+<div class="screen off-right" id="S-captured">
+  <div class="sbar cam-dark"><span class="sbar-t" style="color:#fff">9:41</span><span class="sbar-r" style="color:#fff">▲●▮▮</span></div>
+  <div class="topbar cam-dark"><button class="back" onclick="nav('S-camera','left')" style="background:rgba(255,255,255,.1);color:#fff">←</button>
+    <div><div class="topbar-big" style="color:#fff;font-size:17px">Verify Room</div><div style="font-size:11px;color:#666;margin-top:1px">Step 1 of 3</div></div>
+  </div>
+  <div class="prog-row cam-dark"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:33%"></div></div></div>
+  <div class="cap-bg" style="flex:1">
+    <div class="door-card"><div class="door-n" id="cap-num">302</div><div class="door-lbl">Room Number</div></div>
+    <div class="stamp" id="cap-stamp">02 May 2026 · 09:41:12</div>
+  </div>
+  <div class="bpane" style="background:#0a0a0a;border-top:1px solid #222">
+    <button class="bp-btn" style="background:rgba(255,255,255,.08);color:#fff;border-radius:13px;border:1px solid #333" onclick="nav('S-camera','left')">Retake</button>
+    <button class="bp-btn" style="background:#fff;color:#0a0a0a;border-radius:13px;border:none;font-weight:700" onclick="okCapture()">OK</button>
+  </div>
+  <div class="bsafe" style="background:#0a0a0a"></div>
+</div>
+
+<div class="screen off-right" id="S-before">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-detail','left')">←</button>
+    <div><div class="topbar-big" id="bef-title" style="font-size:17px">Food Delivery</div><div class="topbar-sub">Document Pre-condition · Step 2 of 3</div></div>
+  </div>
+  <div class="prog-row"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:66%"></div></div></div>
+  <div class="content" style="padding:8px 0">
+    <div class="media-section">
+      <div class="media-sub-lbl">📷 Photos</div><div class="media-grid" id="bef-p"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🎬 Videos</div><div class="media-grid" id="bef-v"></div>
+    </div>
+  </div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-detail','left')">Cancel</button>
+    <button class="bp-btn bp-prim" id="bef-ok" onclick="okBefore()" style="opacity:.35" disabled>OK</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-after">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-detail','left')">←</button>
+    <div><div class="topbar-big" id="aft-title" style="font-size:17px">AC Repair</div><div class="topbar-sub">Document Completion · Step 3 of 3</div></div>
+  </div>
+  <div class="prog-row"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:100%"></div></div></div>
+  <div class="content" style="padding:8px 0">
+    <div class="media-section">
+      <div class="media-sub-lbl">📷 Photos</div><div class="media-grid" id="aft-p"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🎬 Videos</div><div class="media-grid" id="aft-v"></div>
+    </div>
+  </div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-detail','left')">Cancel</button>
+    <button class="bp-btn bp-prim" id="aft-ok" onclick="okAfter()" style="opacity:.35" disabled>OK</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-hkb">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-detail','left')">←</button>
+    <div><div class="topbar-big" style="font-size:17px">Housekeeping</div><div class="topbar-sub">Document Pre-condition · Step 2 of 3</div></div>
+  </div>
+  <div class="prog-row"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:66%"></div></div></div>
+  <div class="content" style="padding:8px 0">
+    <div class="media-section">
+      <div class="media-sub-lbl">🛏 Room Condition</div><div class="media-grid" id="hkb-room"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🚿 Bathroom</div><div class="media-grid" id="hkb-bath"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🧴 Amenities</div><div class="media-grid" id="hkb-amen"></div>
+    </div>
+  </div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-detail','left')">Cancel</button>
+    <button class="bp-btn bp-prim" id="hkb-ok" onclick="okHkBefore()" style="opacity:.35" disabled>OK</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-hka">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-detail','left')">←</button>
+    <div><div class="topbar-big" style="font-size:17px">Housekeeping</div><div class="topbar-sub">Document Completion · Step 3 of 3</div></div>
+  </div>
+  <div class="prog-row"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:100%"></div></div></div>
+  <div class="content" style="padding:8px 0">
+    <div class="media-section">
+      <div class="media-sub-lbl">🛏 Room Condition</div><div class="media-grid" id="hka-room"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🚿 Bathroom</div><div class="media-grid" id="hka-bath"></div>
+      <div class="sub-div"></div>
+      <div class="media-sub-lbl">🧴 Amenities</div><div class="media-grid" id="hka-amen"></div>
+    </div>
+  </div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-detail','left')">Cancel</button>
+    <button class="bp-btn bp-prim" id="hka-ok" onclick="okHkAfter()" style="opacity:.35" disabled>OK</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-vdoor">
+  <div class="sbar cam-dark"><span class="sbar-t" style="color:#fff">9:41</span><span class="sbar-r" style="color:#fff">▲●▮▮</span></div>
+  <div class="topbar cam-dark"><button class="back" onclick="nav('S-detail','left')" style="background:rgba(255,255,255,.1);color:#fff">←</button>
+    <div><div class="topbar-big" style="color:#fff;font-size:16px">Verified Room</div><div style="font-size:11px;color:#666;margin-top:1px">Step 1 of 3</div></div>
+  </div>
+  <div class="prog-row cam-dark"><span class="prog-label" style="opacity:0">.</span><div class="prog-track"><div class="prog-fill" style="width:33%"></div></div></div>
+  <div class="cap-bg" style="flex:1">
+    <div class="door-card"><div class="door-n" id="vd-num">302</div><div class="door-lbl">Room Number</div></div>
+    <div class="stamp" id="vd-stamp">—</div>
+  </div>
+  <div class="bpane" style="background:#0a0a0a;border-top:1px solid #222">
+    <button class="bp-btn" style="background:rgba(255,255,255,.08);color:#fff;border-radius:13px;border:1px solid #333" onclick="nav('S-detail','left')">Back</button>
+    <button class="bp-btn" id="vd-next" style="border-radius:13px;font-weight:700;border:none" onclick="nav('S-vbefore','right')">Next →</button>
+  </div>
+  <div class="bsafe" style="background:#0a0a0a"></div>
+</div>
+
+<div class="screen off-right" id="S-vbefore">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-vdoor','left')">←</button>
+    <div><div class="topbar-big" style="font-size:16px">Pre-condition</div><div class="topbar-sub">Step 2 of 3</div></div>
+  </div>
+  <div class="content" style="padding:8px 0" id="vb-body"></div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-vdoor','left')">← Back</button>
+    <button class="bp-btn bp-prim" id="vb-next" onclick="nav('S-vafter','right')">Next →</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="screen off-right" id="S-vafter">
+  <div class="sbar"><span class="sbar-t">9:41</span><span class="sbar-r">▲●▮▮</span></div>
+  <div class="topbar"><button class="back" onclick="nav('S-vbefore','left')">←</button>
+    <div><div class="topbar-big" style="font-size:16px">Completion</div><div class="topbar-sub">Step 3 of 3</div></div>
+  </div>
+  <div class="content" style="padding:8px 0" id="va-body"></div>
+  <div class="bpane">
+    <button class="bp-btn bp-ghost" onclick="nav('S-vbefore','left')">← Back</button>
+    <button class="bp-btn bp-prim" onclick="nav('S-detail','left')">Done</button>
+  </div>
+  <div class="bsafe"></div>
+</div>
+
+<div class="popup-wrap" id="popup" onclick="popupTap(event)">
+  <div class="popup">
+    <div class="popup-title">End this task?</div>
+    <div class="popup-body" id="popup-msg">Mark task as completed?</div>
+    <div class="popup-btns">
+      <button class="ppbtn ppbtn-ok" onclick="confirmDone()">Yes, mark as done</button>
+      <button class="ppbtn ppbtn-cancel" onclick="closePopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+</div></div>
+
+<script>
+const ALL=[
+  {id:1,room:'302',type:'Suite',task:'Food Delivery',icon:'🍽',isHK:false,isRepair:false,slaMins:6,raised:'11:20 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:2,room:'302',type:'Suite',task:'Towels',icon:'🧺',isHK:false,isRepair:false,slaMins:18,raised:'11:05 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:3,room:'210',type:'Deluxe',task:'AC Repair',icon:'❄',isHK:false,isRepair:true,slaMins:4,raised:'11:35 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:4,room:'210',type:'Deluxe',task:'TV Repair',icon:'📺',isHK:false,isRepair:true,slaMins:25,raised:'10:55 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:5,room:'415',type:'Standard',task:'WiFi Issue',icon:'📶',isHK:false,isRepair:true,slaMins:30,raised:'10:40 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:6,room:'415',type:'Standard',task:'Housekeeping',icon:'🧹',isHK:true,isRepair:false,slaMins:20,raised:'11:00 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',hkb:{room:[],bath:[],amen:[]},hka:{room:[],bath:[],amen:[]}},
+  {id:7,room:'118',type:'Standard',task:'Food Delivery',icon:'🍽',isHK:false,isRepair:false,slaMins:9,raised:'11:32 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',bp:[],bv:[],ap:[],av:[]},
+  {id:8,room:'520',type:'Studio',task:'Housekeeping',icon:'🧹',isHK:true,isRepair:false,slaMins:35,raised:'10:25 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',hkb:{room:[],bath:[],amen:[]},hka:{room:[],bath:[],amen:[]}},
+  {id:9,room:'309',type:'Deluxe',task:'Housekeeping',icon:'🧹',isHK:true,isRepair:false,slaMins:42,raised:'10:15 AM',done:true,doorDone:true,beforeDone:true,afterDone:true,doorStamp:'02 May · 09:05:00',hkb:{room:['🛏'],bath:['🚿'],amen:['🧴']},hka:{room:['✅'],bath:['✅'],amen:['✅']}},
+  {id:10,room:'601',type:'Suite',task:'Housekeeping',icon:'🧹',isHK:true,isRepair:false,slaMins:50,raised:'10:05 AM',done:false,doorDone:false,beforeDone:false,afterDone:false,doorStamp:'',hkb:{room:[],bath:[],amen:[]},hka:{room:[],bath:[],amen:[]}},
+];
+
+let curTab='pend',curId=null,signedIn=true;
+
+function clk(){const n=new Date(),h=n.getHours()%12||12,m=String(n.getMinutes()).padStart(2,'0');['clk','clk2'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=h+':'+m;});}
+clk();setInterval(clk,1000);
+
+function toggleSignin(){
+  signedIn=!signedIn;
+  const tr=document.getElementById('tog'),lb=document.getElementById('tog-lbl');
+  tr.classList.toggle('on',signedIn);tr.style.background=signedIn?'#16a34a':'#d1d5db';
+  lb.textContent=signedIn?'Signed in':'Signed out';lb.style.color=signedIn?'#16a34a':'#71717a';
+}
+function setTab(t){curTab=t;document.getElementById('tb-pend').classList.toggle('on',t==='pend');document.getElementById('tb-done').classList.toggle('on',t==='done');renderHome();}
+
+function getRooms(){
+  const map={};
+  ALL.filter(t=>curTab==='pend'?!t.done:t.done).forEach(t=>{
+    if(!map[t.room])map[t.room]={room:t.room,type:t.type,tasks:[]};
+    map[t.room].tasks.push(t);
+  });
+  let rooms=Object.values(map);
+  if(curTab==='pend')rooms.sort((a,b)=>Math.min(...a.tasks.map(x=>x.slaMins))-Math.min(...b.tasks.map(x=>x.slaMins)));
+  return rooms;
+}
+
+function renderHome(){
+  const grid=document.getElementById('home-grid');
+  const rooms=getRooms();
+  if(!rooms.length){grid.innerHTML='<div style="grid-column:span 2;text-align:center;padding:40px 0;color:#a1a1aa;font-size:13px">No tasks</div>';return;}
+  grid.innerHTML=rooms.map(r=>{
+    const minSla=Math.min(...r.tasks.map(t=>t.slaMins));
+    const urgent=minSla<=10&&curTab==='pend';
+    const allDone=r.tasks.every(t=>t.done);
+    const icons=[...new Set(r.tasks.map(t=>t.icon))];
+    return`<div class="sq-card${urgent?' urgent':''}${allDone?' done-c':''}" onclick="openRoom('${r.room}')">
+      ${urgent&&!allDone?'<span class="blink"></span>':''}
+      ${allDone?'<div class="done-check">✓</div>':''}
+      <div class="room-big">${r.room}</div>
+      <div class="sq-icons">${icons.map(ic=>`<span class="sq-ico">${ic}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function openRoom(room){
+  const tasks=ALL.filter(t=>t.room===room&&(curTab==='pend'?!t.done:t.done));
+  if(tasks.length===1){openTask(tasks[0].id);return;}
+  document.getElementById('sheet-title').textContent='Room '+room;
+  document.getElementById('sheet-tasks').innerHTML=tasks.map(t=>{
+    const urg=t.slaMins<=10&&!t.done;
+    return`<div class="sti" onclick="sheetSel(${t.id})">
+      <div class="sti-l"><span class="sti-ico">${t.icon}</span>
+        <div><div class="sti-name">${t.task}</div>
+        <div class="sti-sla" style="color:${urg?'#dc2626':'#888'}">${t.done?'Completed':urg?Math.ceil(t.slaMins)+'m left':'Raised '+t.raised}</div></div>
+      </div>
+      <span class="status-tag ${t.done?'st-done':'st-pend'}">${t.done?'Done':'Pending'}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('sheet').classList.add('open');
+}
+function sheetTap(e){if(e.target===document.getElementById('sheet'))document.getElementById('sheet').classList.remove('open');}
+function sheetSel(id){document.getElementById('sheet').classList.remove('open');setTimeout(()=>openTask(id),200);}
+
+function openTask(id){curId=id;const t=ALL.find(x=>x.id===id);document.getElementById('d-room').textContent=t.room;document.getElementById('d-type').textContent=t.type;renderDetail(t);nav('S-detail','right');}
+function goHome(){renderHome();nav('S-home','left');}
+
+function renderDetail(t){
+  const body=document.getElementById('detail-content'),pane=document.getElementById('detail-pane');
+  const urg=t.slaMins<=10&&!t.done;
+  body.innerHTML=`<div class="sec-lbl">${t.isHK?'Housekeeping':'Service Task'} (1)</div>
+    <div class="dtask${urg?' urgent':''}">
+      <div class="dtask-row1"><div class="dtask-name">${t.icon} ${t.task}</div>
+        <span class="status-tag ${t.done?'st-done':'st-pend'}">${t.done?'Completed':'Pending'}</span></div>
+      <div class="dtask-sla${urg?'':' ok'}">${t.done?'✓ Done':urg?'⚠ '+Math.ceil(t.slaMins)+'m remaining':'Raised '+t.raised}</div>
+    </div>`;
+  const vb=document.createElement('button');
+  vb.className='bp-icon '+(t.doorDone?'on':'off');
+  vb.innerHTML='<span style="font-size:15px;'+(t.doorDone?'filter:invert(1)':'')+'">👁</span>';
+  if(t.doorDone)vb.onclick=()=>openView(t.id);
+  pane.innerHTML='';
+  if(t.done){const d=document.createElement('div');d.style.cssText='flex:1;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#16a34a;padding:13px';d.innerHTML='✓ Task completed';pane.appendChild(d);pane.appendChild(vb);return;}
+  const mb=document.createElement('button');mb.className='bp-btn bp-prim';mb.style.flex='1';
+  if(!t.doorDone){mb.textContent='Verify Room';mb.onclick=()=>openCam(t.id);}
+  else if(!t.beforeDone){mb.textContent='Document Pre-condition';mb.onclick=()=>t.isHK?openHkBefore(t.id):openBefore(t.id);}
+  else if(!t.afterDone){mb.textContent='Document Completion';mb.onclick=()=>t.isHK?openHkAfter(t.id):openAfter(t.id);}
+  else{mb.textContent='Mark as Done';mb.onclick=()=>showPopup(t.id);}
+  pane.appendChild(mb);pane.appendChild(vb);
+}
+
+function openCam(id){curId=id;const t=ALL.find(x=>x.id===id);document.getElementById('cap-num').textContent=t.room;nav('S-camera','right');}
+function captureRoom(){const t=ALL.find(x=>x.id===curId);const now=new Date();t.doorStamp=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+now.toLocaleTimeString('en-GB');document.getElementById('cap-num').textContent=t.room;document.getElementById('cap-stamp').textContent=t.doorStamp;nav('S-captured','right');}
+function okCapture(){const t=ALL.find(x=>x.id===curId);t.doorDone=true;toast('Room '+t.room+' verified');renderDetail(t);nav('S-detail','left');}
+
+function openBefore(id){curId=id;const t=ALL.find(x=>x.id===id);document.getElementById('bef-title').textContent=t.task;renderMG('bef-p',t.bp,'photo','bp');renderMG('bef-v',t.bv,'video','bv');chkSvc('bef',t);nav('S-before','right');}
+function openAfter(id){curId=id;const t=ALL.find(x=>x.id===id);document.getElementById('aft-title').textContent=t.task;renderMG('aft-p',t.ap,'photo','ap');renderMG('aft-v',t.av,'video','av');chkSvc('aft',t);nav('S-after','right');}
+function openHkBefore(id){curId=id;const t=ALL.find(x=>x.id===id);['room','bath','amen'].forEach(s=>renderMGHk('hkb-'+s,t.hkb[s],'hkb',s));chkHk('hkb',t);nav('S-hkb','right');}
+function openHkAfter(id){curId=id;const t=ALL.find(x=>x.id===id);['room','bath','amen'].forEach(s=>renderMGHk('hka-'+s,t.hka[s],'hka',s));chkHk('hka',t);nav('S-hka','right');}
+
+function renderMG(gid,arr,type,key){const g=document.getElementById(gid);if(!g)return;let h=arr.map(e=>`<div class="thumb">${e}</div>`).join('');h+=`<div class="media-add" onclick="addM('${gid}','${key}')"><span class="add-ico">${type==='photo'?'📷':'🎬'}</span><span class="add-lbl">Add</span></div>`;g.innerHTML=h;}
+function renderMGHk(gid,arr,phase,sec){const g=document.getElementById(gid);if(!g)return;let h=arr.map(e=>`<div class="thumb">${e}</div>`).join('');h+=`<div class="media-add" onclick="addMHk('${gid}','${phase}','${sec}')"><span class="add-ico">📷</span><span class="add-lbl">Add</span></div>`;g.innerHTML=h;}
+function addM(gid,key){const t=ALL.find(x=>x.id===curId);const e=['🖼','📷','🌅','🔍','🎬','📹'][Math.floor(Math.random()*6)];t[key].push(e);renderMG(gid,t[key],key.includes('p')?'photo':'video',key);chkSvc(key.startsWith('b')?'bef':'aft',t);}
+function addMHk(gid,phase,sec){const t=ALL.find(x=>x.id===curId);const e=['🛏','🚿','🧴','✨','📷','🌅'][Math.floor(Math.random()*6)];const s=phase==='hkb'?t.hkb:t.hka;s[sec].push(e);renderMGHk(gid,s[sec],phase,sec);chkHk(phase,t);}
+function chkSvc(p,t){const has=p==='bef'?(t.bp.length+t.bv.length>0):(t.ap.length+t.av.length>0);const b=document.getElementById(p+'-ok');if(b){b.disabled=!has;b.style.opacity=has?'1':'.35';}}
+function chkHk(phase,t){const s=phase==='hkb'?t.hkb:t.hka;const has=s.room.length>0&&s.bath.length>0&&s.amen.length>0;const b=document.getElementById(phase+'-ok');if(b){b.disabled=!has;b.style.opacity=has?'1':'.35';}}
+function okBefore(){const t=ALL.find(x=>x.id===curId);t.beforeDone=true;toast('Pre-condition documented');renderDetail(t);nav('S-detail','left');}
+function okAfter(){const t=ALL.find(x=>x.id===curId);t.afterDone=true;toast('Completion documented');renderDetail(t);nav('S-detail','left');}
+function okHkBefore(){const t=ALL.find(x=>x.id===curId);t.beforeDone=true;toast('Pre-condition documented');renderDetail(t);nav('S-detail','left');}
+function okHkAfter(){const t=ALL.find(x=>x.id===curId);t.afterDone=true;toast('Completion documented');renderDetail(t);nav('S-detail','left');}
+function showPopup(id){curId=id;const t=ALL.find(x=>x.id===id);document.getElementById('popup-msg').textContent='Mark "'+t.task+'" for Room '+t.room+' as completed?';document.getElementById('popup').classList.add('open');}
+function closePopup(){document.getElementById('popup').classList.remove('open');}
+function popupTap(e){if(e.target===document.getElementById('popup'))closePopup();}
+function confirmDone(){closePopup();const t=ALL.find(x=>x.id===curId);t.done=true;toast('Task completed');renderDetail(t);setTimeout(()=>{renderHome();nav('S-home','left');},1800);}
+
+function openView(id){
+  curId=id;const t=ALL.find(x=>x.id===id);
+  document.getElementById('vd-num').textContent=t.room;
+  document.getElementById('vd-stamp').textContent=t.doorStamp||'—';
+  const vdn=document.getElementById('vd-next');
+  vdn.style.background=t.beforeDone?'#fff':'rgba(255,255,255,.25)';
+  vdn.style.color=t.beforeDone?'#0a0a0a':'rgba(255,255,255,.4)';
+  vdn.style.pointerEvents=t.beforeDone?'auto':'none';
+  const vbn=document.getElementById('vb-next');
+  vbn.style.opacity=t.afterDone?'1':'.35';vbn.style.pointerEvents=t.afterDone?'auto':'none';
+  document.getElementById('vb-body').innerHTML=t.isHK?hkViewHTML(t.hkb):svcViewHTML(t.bp,t.bv);
+  document.getElementById('va-body').innerHTML=t.isHK?hkViewHTML(t.hka):svcViewHTML(t.ap,t.av);
+  nav('S-vdoor','right');
+}
+function hkViewHTML(s){return`<div class="media-section">${[['🛏 Room Condition','room'],['🚿 Bathroom','bath'],['🧴 Amenities','amen']].map(([l,k])=>`<div class="media-sub-lbl">${l}</div><div class="media-grid">${s[k].length?s[k].map(e=>`<div class="thumb">${e}</div>`).join(''):'<div style="grid-column:span 3;font-size:11px;color:#a1a1aa;font-style:italic;padding:3px 0">No media</div>'}</div><div class="sub-div"></div>`).join('')}</div>`;}
+function svcViewHTML(p,v){return`<div class="media-section"><div class="media-sub-lbl">📷 Photos</div><div class="media-grid">${p.length?p.map(e=>`<div class="thumb">${e}</div>`).join(''):'<div style="grid-column:span 3;font-size:11px;color:#a1a1aa;font-style:italic;padding:3px 0">No media</div>'}</div><div class="sub-div"></div><div class="media-sub-lbl">🎬 Videos</div><div class="media-grid">${v.length?v.map(e=>`<div class="thumb">${e}</div>`).join(''):'<div style="grid-column:span 3;font-size:11px;color:#a1a1aa;font-style:italic;padding:3px 0">No media</div>'}</div></div>`;}
+
+function nav(target,dir){
+  document.querySelectorAll('.screen').forEach(s=>{if(!s.classList.contains('off-right')&&!s.classList.contains('off-left')){s.classList.add(dir==='right'?'off-left':'off-right');setTimeout(()=>{s.classList.remove('off-left');s.classList.add('off-right');},320);}});
+  const next=document.getElementById(target);next.classList.remove('off-right','off-left');
+  next.style.transform='translateX('+(dir==='right'?'100%':'-30%')+')';next.style.opacity='0';
+  requestAnimationFrame(()=>{next.style.transform='';next.style.opacity='';});
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent='✓ '+msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+renderHome();
+</script>
