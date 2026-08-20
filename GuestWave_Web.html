@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Control Panel — Bloom Hotel Madhapur</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --f:'Inter',-apple-system,sans-serif;
+  --g5:#1DBF73;--g0:#E5F8EE;--g7:#148A52;
+  --nv:#1E2533;--nv7:#2E3A50;--nv6:#3A4A62;
+  --n0:#fff;--n50:#F5F6FA;--n100:#EAECF0;--n200:#DFE6E9;
+  --n300:#C8D0D8;--n400:#B2BEC3;--n600:#636E72;--n900:#1A1A1A;
+  --ss:0 1px 4px rgba(0,0,0,.08),0 0 1px rgba(0,0,0,.06);
+  --sm:0 4px 12px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.06);
+  --sl:0 16px 40px rgba(0,0,0,.18),0 4px 12px rgba(0,0,0,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);font-size:14px;color:var(--n900);background:var(--n50);height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.tb{height:44px;background:var(--n0);border-bottom:1px solid var(--n200);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;box-shadow:var(--ss);z-index:10}
+.tb-dv{width:1px;height:20px;background:var(--n200)}
+.tb-sp{flex:1}
+.tb-hotel{font-size:12px;font-weight:600;color:var(--n600);letter-spacing:.01em}
+.tb-title{font-size:13px;font-weight:700;color:var(--n900);letter-spacing:-.01em}
+.refresh-row{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--n600)}
+.rdot{width:6px;height:6px;border-radius:50%;background:var(--g5)}
+
+/* 3-COL LAYOUT */
+.app{flex:1;display:flex;overflow:hidden;min-height:0}
+
+/* LEFT */
+.lp{width:180px;flex-shrink:0;background:var(--nv);display:flex;flex-direction:column;padding:18px 0 14px}
+.profile-blk{padding:0 16px 16px;border-bottom:1px solid var(--nv7);display:flex;flex-direction:column;align-items:center;gap:8px}
+.prof-photo{width:58px;height:58px;border-radius:50%;border:2.5px solid rgba(255,255,255,.2);overflow:hidden;flex-shrink:0}
+.prof-name{font-size:13px;font-weight:600;color:#fff;letter-spacing:.01em}
+.sec-lbl{padding:13px 16px 7px;font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.09em;text-transform:uppercase}
+.fbtns{display:flex;flex-direction:column;gap:2px;padding:0 10px}
+.fbtn{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;border:none;background:transparent;cursor:pointer;width:100%;transition:background 140ms}
+.fbtn:hover{background:rgba(255,255,255,.07)}
+.fbtn.act{background:rgba(255,255,255,.11)}
+.fbtn.ro{cursor:default;opacity:.4;pointer-events:none}
+.fdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.fdot.oos-d{background:repeating-linear-gradient(-45deg,#DC2626 0,#DC2626 2px,#fca5a5 2px,#fca5a5 4px)}
+.flbl{font-size:12px;font-weight:500;color:rgba(255,255,255,.7);flex:1;text-align:left;line-height:1.3}
+.fbtn.act .flbl{color:#fff;font-weight:600}
+.fcnt{font-size:10px;font-weight:600;background:rgba(255,255,255,.12);color:rgba(255,255,255,.55);border-radius:10px;padding:1px 6px;min-width:20px;text-align:center}
+.fbtn.act .fcnt{background:rgba(255,255,255,.2);color:rgba(255,255,255,.9)}
+.lp-foot{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--nv7);font-size:10px;color:rgba(255,255,255,.25)}
+
+/* CENTER */
+.cp{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.ct-bar{height:44px;background:var(--n0);border-bottom:1px solid var(--n200);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.ct-title{font-size:13px;font-weight:600;color:var(--n900)}
+.ct-sp{flex:1}
+/* CHANGE 1: removed .chip style, replaced with just refresh in header */
+
+/* CHANGE 2: cscroll allows vertical scroll only, no horizontal */
+.cscroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 20px 20px}
+
+/* GRID — CHANGE 3: fit all columns within viewport, no horizontal scroll */
+.room-grid{background:var(--n0);border:1px solid var(--n200);border-radius:8px;box-shadow:var(--ss);overflow:hidden;width:100%}
+.gtbl{border-collapse:collapse;width:100%;table-layout:fixed}
+/* type header row */
+.th-type{height:34px;font-size:10px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.09em;text-transform:uppercase;text-align:center;background:var(--nv);border-right:1.5px solid rgba(255,255,255,.15)}
+.th-type:last-child{border-right:none}
+.th-gcorner{width:44px;background:var(--nv7);border-right:1px solid var(--n200)}
+/* col number row */
+.th-num{height:26px;font-size:9px;font-weight:600;color:var(--n400);text-align:center;background:var(--n50);border-bottom:1px solid var(--n200);border-right:1px solid var(--n200)}
+.th-num:last-child{border-right:none}
+/* body */
+.gtbl tbody tr{border-bottom:1px solid var(--n200)}
+.gtbl tbody tr:last-child{border-bottom:none}
+.rlbl-c{width:44px;background:var(--n50);border-right:1px solid var(--n200);padding:0 4px;height:90px;vertical-align:middle;text-align:center}
+.rlbl{font-size:10px;font-weight:700;color:var(--n600);letter-spacing:.07em;text-transform:uppercase}
+.gcell{border-right:1px solid var(--n200);vertical-align:top;padding:4px;height:90px}
+.gcell.grp-end{border-right:2px solid var(--n300)}
+.gcell:last-child{border-right:none}
+.cempty{width:100%;height:100%;border-radius:4px;background:var(--n50);border:1px dashed var(--n200);display:flex;align-items:center;justify-content:center}
+.czero{font-size:11px;font-weight:600;color:var(--n200)}
+
+/* ROOM CARDS */
+.rc{width:100%;height:100%;border-radius:4px;border:1.5px solid transparent;padding:3px;display:flex;flex-direction:column;position:relative;cursor:pointer;transition:box-shadow 120ms}
+.rc:hover{box-shadow:var(--sm)}
+.rc.occupied{background:#D4EDDA;border-color:#A8D5B5}
+.rc.vacant  {background:#FFF9D6;border-color:#E0CE7A}
+.rc.hk      {background:#FDE8CC;border-color:#F0BB8A}
+.rc.oos{background:repeating-linear-gradient(-45deg,#FEE2E2 0,#FEE2E2 5px,#fff0f0 5px,#fff0f0 10px);border-color:#FECACA;cursor:default}
+.rc.sla{border-color:#DC2626!important;box-shadow:0 0 0 1px #DC2626,0 2px 6px rgba(220,38,38,.2)}
+.spip{position:absolute;top:2px;right:2px;width:5px;height:5px;background:#DC2626;border-radius:50%;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.55)}}
+.rnum{font-size:11px;font-weight:700;color:var(--n900);text-align:center;flex:1;display:flex;align-items:center;justify-content:center;letter-spacing:-.01em}
+.rc.oos .rnum{color:#991B1B}
+.ricos{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;min-height:14px;padding:2px 0}
+.rico{font-size:13px;line-height:1;display:inline-flex;align-items:center;justify-content:center;filter:saturate(2) brightness(0.55)}
+.rc.hidden{visibility:hidden;pointer-events:none}
+
+/* RIGHT PANEL */
+.rp{width:218px;flex-shrink:0;background:var(--n0);border-left:1px solid var(--n200);display:flex;flex-direction:column;overflow:hidden}
+.rp-hdr{height:44px;border-bottom:1px solid var(--n200);display:flex;align-items:center;padding:0 14px;flex-shrink:0;background:var(--n50)}
+.rp-ttl{font-size:11px;font-weight:700;color:var(--n600);text-transform:uppercase;letter-spacing:.08em}
+.rp-cards{flex:1;display:flex;flex-direction:column;padding:5px 7px;gap:4px;overflow:hidden;min-height:0}
+.sc{background:var(--n0);border:1px solid var(--n200);border-radius:6px;padding:7px 11px;box-shadow:var(--ss);display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:box-shadow 120ms,border-color 120ms;flex:1;min-height:0;justify-content:center}
+.sc:hover{box-shadow:var(--sm);border-color:var(--n400)}
+.sc.alert{border-color:#FECACA;background:#FFF9F9}
+.sc.alert:hover{border-color:#DC2626}
+.sc.warn{border-color:#FDE68A;background:#FFFDF0}
+.sc.warn:hover{border-color:#F59E0B}
+.sc-lbl{font-size:9.5px;font-weight:600;color:var(--n600);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:4px}
+.sc-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.sc-val{font-size:18px;font-weight:700;color:var(--n900);letter-spacing:-.02em;line-height:1}
+.sc.alert .sc-val{color:#DC2626}
+.sc.warn  .sc-val{color:#B45309}
+.sc-sub{font-size:10px;color:var(--n400);line-height:1.2}
+
+/* MODAL BASE */
+.ov{position:fixed;inset:0;background:rgba(30,37,51,.48);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 200ms;z-index:200}
+.ov.open{opacity:1;pointer-events:all}
+.mdl{background:var(--n0);border-radius:12px;box-shadow:var(--sl);display:flex;flex-direction:column;overflow:hidden;transform:translateY(8px) scale(.987);transition:transform 220ms}
+.ov.open .mdl{transform:none}
+.mhdr{display:flex;align-items:flex-start;gap:10px;padding:15px 18px 12px;border-bottom:1px solid var(--n200);flex-shrink:0}
+.mhdr-i{flex:1;min-width:0}
+.mhdr-t{font-size:15px;font-weight:700;color:var(--n900);letter-spacing:-.01em}
+.mhdr-s{font-size:11px;color:var(--n600);margin-top:2px}
+.mcls{width:26px;height:26px;border:none;background:var(--n100);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n600);font-size:14px;flex-shrink:0;margin-top:1px;transition:background 120ms}
+.mcls:hover{background:var(--n200)}
+.mbody{flex:1;overflow-y:auto}
+.msec{padding:14px 18px;border-bottom:1px solid var(--n100)}
+.msec:last-child{border-bottom:none}
+.mstl{font-size:10px;font-weight:700;color:var(--n400);text-transform:uppercase;letter-spacing:.09em;margin-bottom:11px}
+
+/* ROOM MODAL */
+#rmOv .mdl{width:460px;max-height:86vh}
+.rm-sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.snap-g{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+.sf-l{font-size:10px;font-weight:600;color:var(--n400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.sf-v{font-size:13px;font-weight:600;color:var(--n900)}
+.sf-v.lt{font-weight:400;color:var(--n600)}
+.hk-row{background:var(--n50);border:1px solid var(--n100);border-radius:6px;padding:10px 12px}
+.hk-meta{font-size:10px;font-weight:600;color:var(--n400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.hk-val{font-size:12px;font-weight:600;color:var(--n900)}
+.hk-stf{display:flex;align-items:center;gap:5px;margin-top:5px}
+.sav{width:20px;height:20px;border-radius:50%;background:var(--n200);font-size:9px;font-weight:700;color:var(--n600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sname{font-size:11px;color:var(--n600);font-weight:500}
+.svc-row{background:var(--n50);border:1px solid var(--n100);border-radius:6px;padding:10px 12px;margin-bottom:7px}
+.svc-row:last-child{margin-bottom:0}
+.svc-row.sla-r{border-color:#FECACA;background:#FFF9F9}
+.svc-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.svc-type{font-size:12px;font-weight:600;color:var(--n900);flex:1}
+.svc-time{font-size:10px;color:var(--n600);margin-bottom:7px}
+.svc-btm{display:flex;align-items:center;gap:6px}
+.svc-stf{display:flex;align-items:center;gap:5px;flex:1}
+.sla-badge{font-size:10px;font-weight:700;background:#FEF2F2;color:#DC2626;border:1px solid #FECACA;border-radius:10px;padding:2px 8px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sla-pip2{width:5px;height:5px;border-radius:50%;background:#DC2626;animation:pulse 1.4s ease-in-out infinite;display:inline-block;flex-shrink:0}
+.no-svc{font-size:12px;color:var(--n400);font-style:italic;text-align:center;padding:14px 0}
+.rm-foot{padding:12px 18px;border-top:1px solid var(--n200);background:var(--n50);display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;font-family:var(--f);font-size:12px;font-weight:600;border-radius:6px;padding:6px 13px;border:1px solid transparent;cursor:pointer;transition:filter 130ms,background 130ms,border-color 130ms;white-space:nowrap}
+.btn-gh{background:var(--n0);border-color:var(--n200);color:var(--n900)}
+.btn-gh:hover{background:var(--n100)}
+.btn-pr{background:var(--g5);color:#fff;border-color:var(--g5)}
+.btn-pr:hover{filter:brightness(.92)}
+.btn-dk{background:var(--nv);color:#fff;border-color:var(--nv)}
+.btn-dk:hover{filter:brightness(1.15)}
+.btn-dn{background:var(--n0);border-color:#FECACA;color:#DC2626}
+.btn-dn:hover{background:#FEF2F2}
+.btn-sm{font-size:11px;padding:4px 9px}
+
+/* SUB MODAL */
+#subOv{z-index:310}
+#subOv .mdl{width:400px;max-height:72vh}
+.stf-list{display:flex;flex-direction:column;gap:5px}
+.stf-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;border:1.5px solid var(--n200);cursor:pointer;transition:border-color 130ms,background 130ms}
+.stf-item:hover,.stf-item.sel{border-color:var(--g5);background:var(--g0)}
+.stf-name{font-size:13px;font-weight:600;color:var(--n900)}
+.stf-ld{font-size:11px;color:var(--n600);margin-top:2px}
+.lbar{width:56px;height:3px;background:var(--n200);border-radius:2px;overflow:hidden;margin-top:4px}
+.lbar-f{height:100%;border-radius:2px;background:var(--g5)}
+.cfmsg{font-size:14px;color:var(--n900);line-height:1.55;padding:18px}
+.cffoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--n200);background:var(--n50)}
+.opt-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-c{border:1.5px solid var(--n200);border-radius:8px;padding:14px 10px;text-align:center;cursor:pointer;transition:border-color 130ms,background 130ms}
+.opt-c:hover,.opt-c.sel{border-color:var(--g5);background:var(--g0)}
+.opt-ico{font-size:20px;margin-bottom:5px}
+.opt-lbl{font-size:12px;font-weight:600;color:var(--n900)}
+.multi-o{border:1.5px solid var(--n200);border-radius:6px;padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color 130ms,background 130ms}
+.multi-o:hover,.multi-o.sel{border-color:var(--g5);background:var(--g0)}
+.chkb{width:16px;height:16px;border-radius:3px;border:2px solid var(--n400);margin-left:auto;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:transparent;transition:all 130ms}
+.multi-o.sel .chkb{background:var(--g5);border-color:var(--g5);color:#fff}
+.form-lbl{font-size:11px;font-weight:600;color:var(--n600);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.form-sel{width:100%;padding:9px 12px;font-size:13px;font-family:var(--f);border:1.5px solid var(--n200);border-radius:6px;color:var(--n900);background:var(--n0);cursor:pointer;outline:none;transition:border-color 130ms}
+.form-sel:focus{border-color:var(--g5)}
+.sfoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--n200);background:var(--n50);flex-shrink:0}
+.pill-pick{display:flex;flex-wrap:wrap;gap:7px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--n200);background:var(--n0);cursor:pointer;transition:all 130ms}
+.pill:hover,.pill.sel{border-color:var(--g5);background:var(--g0);color:var(--g7)}
+
+/* RP DETAIL MODAL */
+#rpOv .mdl{width:520px;max-height:80vh}
+.rp-list{display:flex;flex-direction:column}
+.rp-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--n100)}
+.rp-row:last-child{border-bottom:none}
+.rp-row.sla-r{background:#FFF9F9}
+.rprm{font-size:13px;font-weight:700;color:var(--n900);min-width:44px;flex-shrink:0}
+.rpinfo{flex:1;min-width:0}
+.rp-main{font-size:13px;font-weight:600;color:var(--n900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-sub{font-size:11px;color:var(--n600);margin-top:2px}
+.rp-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;text-align:right;margin-left:8px}
+.rp-rv{font-size:13px;font-weight:600;color:var(--n900)}
+.rp-rs{font-size:11px;color:var(--n600)}
+.cdwn{font-size:12px;font-weight:700;color:#DC2626;min-width:76px;text-align:right;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;border-radius:10px;padding:2px 8px;white-space:nowrap}
+.b-pend{background:var(--n100);color:var(--n600);border:1px solid var(--n200)}
+.b-del{background:#FEF2F2;color:#DC2626;border:1px solid #FECACA}
+.rp-acts{display:flex;gap:5px;flex-shrink:0;margin-left:6px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--n900);color:#fff;font-size:12px;font-weight:500;border-radius:8px;padding:9px 18px;box-shadow:var(--sl);opacity:0;pointer-events:none;transition:opacity 180ms,transform 180ms;z-index:600;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR — CHANGE 4: restored hotel name + Control Panel, removed chip -->
+<div class="tb">
+  <span class="tb-hotel">Bloom Hotel Madhapur</span>
+  <div class="tb-dv"></div>
+  <span class="tb-title">Control Panel</span>
+  <div class="tb-sp"></div>
+  <div class="refresh-row"><span class="rdot"></span><span id="tbClock" style="font-size:12px;color:var(--n600);font-weight:500"></span></div>
+</div>
+
+<div class="app">
+
+<!-- LEFT PANEL -->
+<aside class="lp">
+  <div class="profile-blk">
+    <div class="prof-photo">
+      <svg width="58" height="58" viewBox="0 0 58 58" fill="none">
+        <circle cx="29" cy="29" r="29" fill="url(#pg)"/>
+        <circle cx="29" cy="23" r="10" fill="rgba(255,255,255,.48)"/>
+        <ellipse cx="29" cy="50" rx="18" ry="13" fill="rgba(255,255,255,.48)"/>
+        <defs><linearGradient id="pg" x1="0" y1="0" x2="58" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#3A4A62"/><stop offset="1" stop-color="#1E2533"/></linearGradient></defs>
+      </svg>
+    </div>
+    <div class="prof-name">Mitra</div>
+  </div>
+  <div class="sec-lbl">Room Status</div>
+  <div class="fbtns">
+    <button class="fbtn act" data-s="occupied"><span class="fdot" style="background:#4A9B6F"></span><span class="flbl">Occupied</span><span class="fcnt" id="cnt-occ">—</span></button>
+    <button class="fbtn" data-s="vacant"><span class="fdot" style="background:#C9A820"></span><span class="flbl">Vacant Ready</span><span class="fcnt" id="cnt-vac">—</span></button>
+    <button class="fbtn" data-s="hk"><span class="fdot" style="background:#D4720A"></span><span class="flbl">Needs HK</span><span class="fcnt" id="cnt-hk">—</span></button>
+    <button class="fbtn" data-s="oos"><span class="fdot oos-d"></span><span class="flbl">Out of Service</span><span class="fcnt" id="cnt-oos">—</span></button>
+  </div>
+  <div class="lp-foot">GuestWave V3</div>
+</aside>
+
+<!-- CENTER — CHANGE 3: removed chip from ct-bar, only refresh shown -->
+<main class="cp">
+  <div class="ct-bar">
+    <span class="ct-title">Room Grid</span>
+    <div class="ct-sp"></div>
+    <div class="refresh-row" style="border:none;background:none"><span class="rdot"></span><span id="gridRefresh" style="font-size:11px;color:var(--n600)">—</span></div>
+  </div>
+  <div class="cscroll">
+    <div class="room-grid"><table class="gtbl" id="gtbl"></table></div>
+  </div>
+</main>
+
+<!-- RIGHT PANEL -->
+<aside class="rp">
+  <div class="rp-hdr"><span class="rp-ttl">At a Glance</span></div>
+  <div class="rp-cards">
+    <div class="sc alert" data-rp="sla"><div class="sc-lbl"><span class="sc-dot" style="background:#DC2626"></span>SLA Breach</div><div class="sc-val" id="stat-sla">2</div><div class="sc-sub">Past due</div></div>
+    <div class="sc warn"  data-rp="active"><div class="sc-lbl"><span class="sc-dot" style="background:#D97706"></span>Active Requests</div><div class="sc-val" id="stat-active">—</div><div class="sc-sub">In progress</div></div>
+    <div class="sc"       data-rp="occ"><div class="sc-lbl"><span class="sc-dot" style="background:#1DBF73"></span>Occupancy</div><div class="sc-val" id="stat-occ">—</div><div class="sc-sub">Tonight</div></div>
+    <div class="sc"       data-rp="ci"><div class="sc-lbl"><span class="sc-dot" style="background:#3B9EEB"></span>Upcoming Check-ins</div><div class="sc-val">4</div><div class="sc-sub">Due today</div></div>
+    <div class="sc"       data-rp="co"><div class="sc-lbl"><span class="sc-dot" style="background:#6764E8"></span>Upcoming Check-outs</div><div class="sc-val">3</div><div class="sc-sub">Due today</div></div>
+    <div class="sc warn"  data-rp="delayed"><div class="sc-lbl"><span class="sc-dot" style="background:#D97706"></span>Delayed Check-outs</div><div class="sc-val">1</div><div class="sc-sub">Overdue</div></div>
+    <div class="sc"       data-rp="staff"><div class="sc-lbl"><span class="sc-dot" style="background:#1DBF73"></span>Staff Available</div><div class="sc-val">8</div><div class="sc-sub">On shift</div></div>
+    <div class="sc"       data-rp="leave"><div class="sc-lbl"><span class="sc-dot" style="background:#B2BEC3"></span>On Leave</div><div class="sc-val">2</div><div class="sc-sub">Today</div></div>
+  </div>
+</aside>
+</div>
+
+<!-- ROOM MODAL -->
+<div class="ov" id="rmOv">
+  <div class="mdl">
+    <div class="mhdr">
+      <div class="rm-sdot" id="rmDot"></div>
+      <div class="mhdr-i"><div class="mhdr-t" id="rmTitle"></div><div class="mhdr-s" id="rmSub"></div></div>
+      <div id="rmSla" class="sla-badge" style="display:none;margin-right:8px"><span class="sla-pip2"></span>SLA Breach</div>
+      <button class="mcls" id="rmCls">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="msec">
+        <div class="mstl">Snapshot</div>
+        <div class="snap-g">
+          <div><div class="sf-l">Guest</div><div class="sf-v" id="rmGuest"></div></div>
+          <div><div class="sf-l">Members</div><div class="sf-v" id="rmMem"></div></div>
+          <div><div class="sf-l">Check-in</div><div class="sf-v lt" id="rmCi"></div></div>
+          <div><div class="sf-l">Check-out</div><div class="sf-v lt" id="rmCo"></div></div>
+        </div>
+      </div>
+      <div class="msec">
+        <div class="mstl">Housekeeping</div>
+        
+      </div>
+      <div class="msec">
+        <div class="mstl">Pending Service Requests</div>
+        <div id="rmSvcList"></div>
+      </div>
+    </div>
+    <div class="rm-foot">
+      <button class="btn btn-gh" id="rmTask"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Create Task</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-pr" id="rmAct"></button>
+    </div>
+  </div>
+</div>
+
+<!-- SUB MODAL -->
+<div class="ov" id="subOv">
+  <div class="mdl">
+    <div class="mhdr"><div class="mhdr-i"><div class="mhdr-t" id="subT"></div><div class="mhdr-s" id="subS" style="display:none"></div></div><button class="mcls" id="subCls">✕</button></div>
+    <div class="mbody" id="subBody" style="padding:0"></div>
+    <div id="subFoot"></div>
+  </div>
+</div>
+
+<!-- RP DETAIL MODAL -->
+<div class="ov" id="rpOv">
+  <div class="mdl">
+    <div class="mhdr"><div class="mhdr-i"><div class="mhdr-t" id="rpT"></div></div><button class="mcls" id="rpCls">✕</button></div>
+    <div class="mbody" id="rpBody" style="padding:0"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const ICONS={AC:'❄️',TV:'📺',Plumbing:'🔧',Electrical:'⚡',WiFi:'📶',Food:'🍽️',Housekeeping:'🧹',General:'🛎️'};
+const COLTYPE=i=>i<8?'Standard':i<14?'Deluxe':i<18?'Suite':'Studio';
+const GRP_END=new Set([7,13,17]);
+
+const STAFF=[
+  {name:'Meera Pillai', ini:'MP',tasks:1,phone:'+91 98765 66666',signin:'9:15 AM'},
+  {name:'Kiran Menon',  ini:'KM',tasks:2,phone:'+91 98765 55555',signin:'8:30 AM'},
+  {name:'Priya Sharma', ini:'PS',tasks:2,phone:'+91 98765 11111',signin:'8:00 AM'},
+  {name:'Suresh Nair',  ini:'SN',tasks:2,phone:'+91 98765 77777',signin:'7:30 AM'},
+  {name:'Ravi Kumar',   ini:'RK',tasks:3,phone:'+91 98765 22222',signin:'8:15 AM'},
+  {name:'Lakshmi Devi', ini:'LD',tasks:3,phone:'+91 98765 88888',signin:'8:45 AM'},
+  {name:'Sunita Bai',   ini:'SB',tasks:4,phone:'+91 98765 33333',signin:'7:45 AM'},
+  {name:'Anand Rao',    ini:'AR',tasks:5,phone:'+91 98765 44444',signin:'9:00 AM'},
+];
+const GUESTS=['Arjun Mehta','Divya Nair','Rohan Sharma','Neha Iyer','Vikram Rao','Sanya Kapoor','Fatima Sheikh','Raj Patel','Priya Singh','Amit Kumar','Sara Ali','Karan Mehta','Pooja Reddy','Arun Das','Meena Iyer','Dev Verma','Sunita Roy','Zara Khan','Rahul Gupta','Anjali Das'];
+const PHONES=['+91 98765 43210','+91 91234 56789','+91 87654 32109','+91 99887 76655','+91 98001 11001','+91 98001 33003','+91 98001 30200','+91 98001 12345','+91 97654 32101','+91 96543 21098','+91 95432 10987','+91 94321 09876','+91 93210 98765','+91 92109 87654','+91 91098 76543'];
+
+const PRE={
+  '101':{status:'occupied',icons:['🍽️','📶'],guest:'Arjun Mehta',members:2,phone:'+91 98765 43210',checkin:'Apr 28 · 14:10',checkout:'May 02 · 11:00',hk:{time:'Today, 08:30',staff:'Priya Sharma',ini:'PS'},svc:[{type:'Service Request — Food',sub:'Food',time:'Today, 12:45',staff:'Anand Rao',ini:'AR',sla:false}]},
+  '102':{status:'vacant', icons:[],guest:null,members:null,checkin:'—',checkout:'—',hk:{time:'Today, 10:00',staff:'Priya Sharma',ini:'PS'},svc:[]},
+  '103':{status:'hk',     icons:[],guest:'Neha Iyer',members:3,phone:'+91 91234 56789',checkin:'Apr 29 · 13:00',checkout:'May 03 · 11:00',hk:{time:'Yesterday, 15:00',staff:'Sunita Bai',ini:'SB'},svc:[]},
+  '104':{status:'oos',    icons:[],guest:null,members:null,checkin:'—',checkout:'—',hk:{time:'Apr 27 · 11:00',staff:'Sunita Bai',ini:'SB'},svc:[]},
+  '201':{status:'occupied',icons:['❄️','📶'],guest:'Divya Nair',members:2,phone:'+91 87654 32109',checkin:'Apr 30 · 11:30',checkout:'May 04 · 11:00',hk:{time:'Today, 09:15',staff:'Ravi Kumar',ini:'RK'},svc:[{type:'Service Request — AC',sub:'AC',time:'Today, 13:20',staff:'Kiran Menon',ini:'KM',sla:false}]},
+  '202':{status:'occupied',icons:['🍽️'],sla:true,guest:'Rohan Sharma',members:1,phone:'+91 99887 76655',checkin:'Apr 29 · 15:00',checkout:'May 01 · 11:00',hk:{time:'Today, 07:45',staff:'Sunita Bai',ini:'SB'},svc:[{type:'Service Request — Food',sub:'Food',time:'Today, 11:50',staff:'Anand Rao',ini:'AR',sla:true}]},
+  '203':{status:'vacant', icons:[],guest:null,members:null,checkin:'—',checkout:'—',hk:{time:'Today, 10:30',staff:'Ravi Kumar',ini:'RK'},svc:[]},
+  '204':{status:'hk',     icons:[],guest:null,members:null,phone:null,checkin:'—',checkout:'—',hkTask:null,hk:{time:'Today, 08:00',staff:'Priya Sharma',ini:'PS'},svc:[]},
+  '301':{status:'occupied',icons:['📶'],guest:'Vikram Rao',members:2,phone:'+91 98001 11001',checkin:'Apr 28 · 16:00',checkout:'May 02 · 11:00',hk:{time:'Today, 09:00',staff:'Sunita Bai',ini:'SB'},svc:[{type:'Service Request — WiFi',sub:'WiFi',time:'Today, 10:30',staff:'Kiran Menon',ini:'KM',sla:false}]},
+  '302':{status:'occupied',icons:['🍽️','❄️'],sla:true,guest:'Sanya Kapoor',members:4,phone:'+91 98001 33003',checkin:'Apr 29 · 14:00',checkout:'May 03 · 11:00',hk:{time:'Today, 07:30',staff:'Ravi Kumar',ini:'RK'},svc:[{type:'Service Request — Food & AC',sub:'Food & AC',time:'Today, 12:10',staff:'Anand Rao',ini:'AR',sla:true}]},
+  '303':{status:'vacant', icons:[],guest:null,members:null,checkin:'—',checkout:'—',hk:{time:'Today, 11:00',staff:'Priya Sharma',ini:'PS'},svc:[]},
+  '304':{status:'oos',    icons:[],guest:null,members:null,checkin:'—',checkout:'—',hk:{time:'Apr 26 · 10:00',staff:'Sunita Bai',ini:'SB'},svc:[]},
+};
+
+const SVC_POOLS=[{sub:'AC',ic:'❄️'},{sub:'WiFi',ic:'📶'},{sub:'Food',ic:'🍽️'},{sub:'TV',ic:'📺'}];
+function genRoom(fn,ci){
+  const s=(fn*31+ci*13+fn*ci*7)%100;
+  const st=s<52?'occupied':s<68?'vacant':s<84?'hk':'oos';
+  const gi=s%GUESTS.length;
+  const g=(st==='occupied'||st==='hk')?GUESTS[gi]:null;
+  const hr=10+s%8; const mn=String((s*17)%60).padStart(2,'0');
+  const si=s%8; const sf=STAFF[si];
+  const hasSvc=st==='occupied'&&(s%7===0);
+  const pool=SVC_POOLS[(fn+ci)%4];
+  return{
+    status:st,icons:hasSvc?[pool.ic]:[],guest:g,members:g?1+s%3:null,
+    phone:g?PHONES[gi%PHONES.length]:null,
+    checkin:g?`Apr ${27+s%4} · ${hr}:${mn}`:'—',
+    checkout:g?`May ${1+s%5} · 11:00`:'—',
+    hk:{time:`Today, ${7+s%5}:${String((s*19)%60).padStart(2,'0')}`,staff:sf.name,ini:sf.ini},
+    svc:hasSvc?[{type:`Service Request — ${pool.sub}`,sub:pool.sub,time:`Today, ${hr}:${mn}`,staff:STAFF[(si+3)%8].name,ini:STAFF[(si+3)%8].ini,sla:false}]:[]
+  };
+}
+
+const STATE={rooms:{},floors:{F1:[],F2:[],F3:[],F4:[],F5:[]}};
+[1,2,3,4,5].forEach(fn=>{
+  for(let ci=0;ci<20;ci++){
+    const num=`${fn}${String(ci+1).padStart(2,'0')}`;
+    const fl=`F${fn}`;
+    const base=genRoom(fn,ci);
+    const pre=PRE[num]||{};
+    STATE.rooms[num]={num,floor:fl,colIdx:ci,type:COLTYPE(ci),...base,...pre};
+    STATE.floors[fl].push(num);
+  }
+});
+
+const SLA_START={'202':Date.now()-7*60000,'302':Date.now()-3*60000-45000};
+
+const CI_DATA=[
+  {room:'402',guest:'Ms. Aarti Bose',  phone:'+91 98765 43210',time:'2:00 PM',checkout:'2026-05-04',pax:2},
+  {room:'403',guest:'Mr. Dev Patel',   phone:'+91 91234 56789',time:'3:30 PM',checkout:'2026-05-03',pax:1},
+  {room:'501',guest:'Ms. Reena Singh', phone:'+91 87654 32109',time:'5:00 PM',checkout:'2026-05-06',pax:3},
+  {room:'502',guest:'Mr. Arjun Verma', phone:'+91 99887 76655',time:'6:30 PM',checkout:'2026-05-05',pax:2},
+];
+const CO_DATA=[
+  {room:'110',guest:'Arjun Joshi', phone:'+91 98001 11099',time:'12:00 PM'},
+  {room:'209',guest:'Kavya Nair',  phone:'+91 98001 22099',time:'1:30 PM'},
+  {room:'315',guest:'Suresh Rao',  phone:'+91 98001 33099',time:'4:00 PM'},
+];
+const DL_DATA=[{room:'201',guest:'Divya Nair',checkout:'11:00 AM',phone:'+91 87654 32109'}];
+const LEAVE=[{name:'Rajesh Kumar',phone:'+91 98765 99999',reason:'Medical leave'},{name:'Anjali Singh',phone:'+91 98765 00000',reason:'Personal leave'}];
+
+function fmtTime(d=new Date()){const h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';return`${h%12||12}:${String(m).padStart(2,'0')} ${ap}`}
+function ini(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function staffH(name,i){
+  if(!name||name==='—') return`<span style="font-size:11px;color:var(--n400)">—</span>`;
+  return`<div class="sav">${i}</div><span class="sname">${name}</span>`;
+}
+function svcLbl(sub){
+  const parts=(sub||'').split(' & ');
+  return parts.map(p=>(ICONS[p.trim()]||'')+' '+p.trim()).join(' · ');
+}
+function countSt(s){return Object.values(STATE.rooms).filter(r=>r.status===s).length}
+function totalR(){return Object.values(STATE.rooms).length}
+function countSvc(){return Object.values(STATE.rooms).reduce((n,r)=>n+(r.svc?r.svc.length:0),0)}
+function countSla(){return Object.values(STATE.rooms).filter(r=>r.sla).length}
+
+function updCounts(){
+  document.getElementById('cnt-occ').textContent=countSt('occupied');
+  document.getElementById('cnt-vac').textContent=countSt('vacant');
+  document.getElementById('cnt-hk').textContent=countSt('hk');
+  document.getElementById('cnt-oos').textContent=countSt('oos');
+  document.getElementById('stat-sla').textContent=countSla();
+  document.getElementById('stat-active').textContent=countSvc();
+  document.getElementById('stat-occ').textContent=Math.round(countSt('occupied')/totalR()*100)+'%';
+}
+function updRefresh(){
+  const t=fmtTime();
+  const gr=document.getElementById('gridRefresh');
+  if(gr) gr.textContent=`Last refreshed ${t}`;
+}
+function updClock(){
+  const now=new Date();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const day=days[now.getDay()];
+  const date=now.getDate();
+  const mon=months[now.getMonth()];
+  const h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  const ap=h>=12?'PM':'AM';
+  const hh=h%12||12;
+  const mm=String(m).padStart(2,'0');
+  const ss=String(s).padStart(2,'0');
+  const el=document.getElementById('tbClock');
+  if(el) el.textContent=`${day}, ${date} ${mon}  ·  ${hh}:${mm}:${ss} ${ap}`;
+}
+
+function cardHTML(r){
+  if(!r) return`<div class="cempty"><span class="czero">0</span></div>`;
+  const sla=r.sla?' sla':'';
+  const pip=r.sla?'<span class="spip"></span>':'';
+  const icons=(r.icons||[]).map(ic=>`<span class="rico">${ic}</span>`).join('');
+  return`<div class="rc ${r.status}${sla}" data-num="${r.num}" data-status="${r.status}">${pip}<div class="rnum">${r.num}</div><div class="ricos">${icons}</div></div>`;
+}
+function reCard(num){
+  const old=document.querySelector(`.rc[data-num="${num}"]`);
+  if(old) old.closest('.gcell').innerHTML=cardHTML(STATE.rooms[num]);
+  reFilter();
+}
+function reFilter(){
+  const activeBtn=document.querySelector('.fbtn.act');
+  if(!activeBtn) return;
+  const s=activeBtn.dataset.s;
+  document.querySelectorAll('.rc').forEach(c=>{
+    const match=c.dataset.status===s;
+    const cell=c.closest('.gcell');
+    let emp=cell.querySelector('.cempty');
+    if(!match){
+      if(!emp){emp=document.createElement('div');emp.className='cempty';emp.innerHTML='<span class="czero">0</span>';cell.appendChild(emp);}
+      emp.style.display='flex'; c.style.display='none';
+    } else {
+      if(emp) emp.style.display='none'; c.style.display='';
+    }
+  });
+}
+
+function buildGrid(){
+  const tbl=document.getElementById('gtbl');
+  const thead=document.createElement('thead');
+  const tr1=document.createElement('tr');
+  const corner=document.createElement('th');
+  corner.className='th-gcorner'; corner.rowSpan=2; tr1.appendChild(corner);
+  [['Standard',8],['Deluxe',6],['Suite',4],['Studio',2]].forEach(([lbl,span],gi,arr)=>{
+    const th=document.createElement('th');
+    th.className='th-type'; th.colSpan=span; th.textContent=lbl;
+    if(gi===arr.length-1) th.style.borderRight='none';
+    tr1.appendChild(th);
+  });
+  thead.appendChild(tr1);
+  const tr2=document.createElement('tr');
+  for(let i=0;i<20;i++){
+    const th=document.createElement('th');
+    th.className='th-num'; th.textContent=String(i+1).padStart(2,'0');
+    if(i===19) th.style.borderRight='none';
+    tr2.appendChild(th);
+  }
+  thead.appendChild(tr2);
+  tbl.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  ['F1','F2','F3','F4','F5'].forEach(fl=>{
+    const tr=document.createElement('tr');
+    const lbl=document.createElement('td');
+    lbl.className='rlbl-c'; lbl.innerHTML=`<span class="rlbl">${fl}</span>`; tr.appendChild(lbl);
+    STATE.floors[fl].forEach((num,ci)=>{
+      const td=document.createElement('td');
+      td.className='gcell'+(GRP_END.has(ci)?' grp-end':'');
+      td.innerHTML=cardHTML(STATE.rooms[num]);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+}
+
+document.querySelectorAll('.fbtn:not(.ro)').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('act'));
+    btn.classList.add('act');
+    const s=btn.dataset.s;
+    document.querySelectorAll('.rc').forEach(c=>{
+      const match=c.dataset.status===s;
+      const cell=c.closest('.gcell');
+      let emp=cell.querySelector('.cempty');
+      if(!match){
+        if(!emp){emp=document.createElement('div');emp.className='cempty';emp.innerHTML='<span class="czero">0</span>';cell.appendChild(emp);}
+        emp.style.display='flex'; c.style.display='none';
+      } else {
+        if(emp) emp.style.display='none'; c.style.display='';
+      }
+    });
+  });
+});
+
+const toastEl=document.getElementById('toast');
+let _tt;
+function showToast(m){clearTimeout(_tt);toastEl.textContent=m;toastEl.classList.add('show');_tt=setTimeout(()=>toastEl.classList.remove('show'),2400);}
+function openOv(id){document.getElementById(id).classList.add('open')}
+function closeOv(id){document.getElementById(id).classList.remove('open')}
+function closeAll(){['rmOv','subOv','rpOv'].forEach(closeOv)}
+
+function openSub(t,s,body,foot){
+  document.getElementById('subT').textContent=t;
+  const ss=document.getElementById('subS');
+  if(s){ss.textContent=s;ss.style.display='block'}else ss.style.display='none';
+  document.getElementById('subBody').innerHTML=body;
+  document.getElementById('subFoot').innerHTML=foot||'';
+  openOv('subOv');
+}
+function cfmDlg(q,msg,onDone){
+  openSub('Confirm',null,
+    `<div class="cfmsg">${q}</div>`,
+    `<div class="cffoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" onclick="execCfm()">Confirm</button></div>`
+  );
+  window._cfmMsg=msg; window._cfmDone=onDone||null;
+}
+window.execCfm=function(){
+  const msg=window._cfmMsg||'Done';
+  closeAll(); showToast('✓ '+msg);
+  if(window._cfmDone){window._cfmDone();window._cfmDone=null;}
+};
+
+let _curRm=null;
+const DOT={occupied:'#4A9B6F',vacant:'#C9A820',hk:'#D4720A',oos:'#DC2626'};
+
+function openRM(num){
+  const r=STATE.rooms[num]; if(!r) return; _curRm=num;
+  document.getElementById('rmTitle').textContent=`Room ${num}`;
+  document.getElementById('rmSub').textContent=r.type;
+  document.getElementById('rmDot').style.background=DOT[r.status]||'#ccc';
+  document.getElementById('rmSla').style.display=r.sla?'inline-flex':'none';
+  document.getElementById('rmGuest').textContent=r.guest||'Unoccupied';
+  document.getElementById('rmMem').textContent=r.members?`${r.members} pax`:'—';
+  document.getElementById('rmCi').textContent=r.checkin;
+  document.getElementById('rmCo').textContent=r.checkout;
+  rendHk(r,num);
+  rendSvc(r);
+  const btn=document.getElementById('rmAct');
+  btn.style.display='';
+  if(r.status==='occupied'){btn.textContent='Check-out';btn.className='btn btn-dk';btn.onclick=()=>cfmDlg(`Check out guest from Room ${num}?`,`Room ${num} checked out`,()=>{
+    const rm=STATE.rooms[num];
+    rm.status='hk'; rm.guest=null; rm.members=null; rm.checkin='—'; rm.checkout='—';
+    rm.icons=[]; rm.sla=false; rm.svc=[]; rm.hkTask=null;
+    reCard(num); updCounts(); closeOv('rmOv');
+  });}
+  else if(r.status==='vacant'){btn.textContent='Check-in';btn.className='btn btn-pr';btn.onclick=()=>openCheckinModal(num);}
+  else if(r.status==='hk'){btn.style.display='none';}
+  else{btn.textContent='Log Issue';btn.className='btn btn-gh';btn.onclick=()=>cfmDlg(`Log issue for Room ${num}?`,`Issue logged — Room ${num}`);}
+  document.getElementById('rmTask').onclick=()=>ctOpen(num);
+  openOv('rmOv');
+}
+function rendHk(r,num){
+  const hkSec=document.querySelector('#rmOv .msec:nth-child(2)');
+  hkSec.innerHTML='';
+  const title=document.createElement('div');
+  title.className='mstl';
+  title.textContent='Housekeeping';
+  hkSec.appendChild(title);
+  if(r.hkTask){
+    const row=document.createElement('div');
+    row.className='svc-row';
+    row.innerHTML=`
+      <div class="svc-top"><div class="svc-type">🧹 Pending</div></div>
+      <div class="svc-time">Assigned: ${r.hkTask.time}</div>
+      <div class="svc-btm">
+        <div class="svc-stf">${staffH(r.hkTask.staff,r.hkTask.ini)}</div>
+        <button class="btn btn-sm btn-gh" onclick="raHkTask('${num}')">Reassign</button>
+        <button class="btn btn-sm btn-dn" onclick="mkHkDone('${num}')">Mark Done</button>
+      </div>`;
+    hkSec.appendChild(row);
+  } else if(r.status==='hk'||r.status==='oos'){
+    const row=document.createElement('div');
+    row.className='hk-row';
+    row.style.cssText='color:var(--n400);font-size:12px;font-style:italic;padding:10px 12px';
+    row.textContent='No housekeeping task assigned yet.';
+    hkSec.appendChild(row);
+  } else {
+    const row=document.createElement('div');
+    row.className='hk-row';
+    row.innerHTML=`<div class="hk-meta">Last Done</div>
+      <div class="hk-val">${r.hk?r.hk.time:'—'}</div>
+      <div class="hk-stf">${r.hk?staffH(r.hk.staff,r.hk.ini):'—'}</div>`;
+    hkSec.appendChild(row);
+  }
+}
+window.raHkTask=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const sorted=[...STAFF].sort((a,b)=>a.tasks-b.tasks);
+  const items=sorted.map(s=>`
+    <div class="stf-item" onclick="raSelStaff(this,'${s.name.replace(/'/g,"\'")}','${s.ini}')">
+      <div class="sav" style="width:30px;height:30px;font-size:11px">${s.ini}</div>
+      <div style="flex:1"><div class="stf-name">${s.name}</div><div class="stf-ld">${s.tasks} task${s.tasks!==1?'s':''}</div>
+      <div class="lbar"><div class="lbar-f" style="width:${Math.min(s.tasks/6*100,100)}%"></div></div></div>
+      ${s.name===room.hkTask.staff?'<span style="font-size:10px;color:var(--n400);font-weight:600">Current</span>':''}
+    </div>`).join('');
+  openSub('Reassign','Housekeeping task',
+    `<div class="msec" style="border:none"><div class="mstl">Sorted by availability</div><div class="stf-list">${items}</div></div>`,
+    `<div class="cffoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" id="raCfmBtn" disabled onclick="raHkCfm('${num}')">Confirm</button></div>`
+  );
+  window._raStaff=null;
+};
+window.raHkCfm=function(num){
+  const s=window._raStaff; if(!s) return;
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const old=STAFF.find(x=>x.name===room.hkTask.staff); if(old) old.tasks--;
+  room.hkTask.staff=s.name; room.hkTask.ini=s.i;
+  const ns=STAFF.find(x=>x.name===s.name); if(ns) ns.tasks++;
+  closeAll(); showToast(`✓ Reassigned to ${s.name}`); updCounts();
+};
+window.mkHkDone=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const staffName=room.hkTask.staff; const staffIni=room.hkTask.ini;
+  cfmDlg(`Mark housekeeping as done for Room ${num}?`,`Housekeeping done — Room ${num}`,()=>{
+    const sf=STAFF.find(x=>x.name===staffName); if(sf) sf.tasks--;
+    room.hk={time:'Just now',staff:staffName,ini:staffIni};
+    room.hkTask=null;
+    room.icons=room.icons.filter(i=>i!=='🧹');
+    if(room.status==='hk') room.status='vacant';
+    reCard(num); updCounts(); closeAll();
+  });
+};
+
+function rendSvc(r){
+  const el=document.getElementById('rmSvcList');
+  if(!(r.svc&&r.svc.length)){el.innerHTML='<div class="no-svc">No pending requests</div>';return;}
+  el.innerHTML=r.svc.map((s,i)=>`
+    <div class="svc-row ${s.sla?'sla-r':''}">
+      <div class="svc-top"><div class="svc-type">${svcLbl(s.sub||s.type.replace('Service Request — ',''))}</div>${s.sla?'<div class="sla-badge"><span class="sla-pip2"></span>SLA Breach</div>':''}</div>
+      <div class="svc-time">Raised: ${s.time}</div>
+      <div class="svc-btm"><div class="svc-stf">${staffH(s.staff,s.ini)}</div>
+        <button class="btn btn-sm btn-gh" onclick="raStart('${r.num}',${i})">Reassign</button>
+        <button class="btn btn-sm btn-dn" onclick="mkDone('${r.num}',${i})">Mark Done</button>
+      </div>
+    </div>`).join('');
+}
+document.getElementById('rmCls').addEventListener('click',()=>closeOv('rmOv'));
+document.getElementById('rmOv').addEventListener('click',e=>{if(e.target===document.getElementById('rmOv'))closeOv('rmOv');});
+document.getElementById('gtbl').addEventListener('click',e=>{
+  const c=e.target.closest('.rc');
+  if(!c||c.classList.contains('oos')||c.style.display==='none'||c.classList.contains('hidden')) return;
+  openRM(c.dataset.num);
+});
+
+window.raStart=function(num,idx){
+  const svc=STATE.rooms[num]?.svc||[];
+  if(svc.length>1&&idx===undefined){
+    const pills=svc.map((s,i)=>`<button class="pill" onclick="raStart('${num}',${i})">${svcLbl(s.sub)}</button>`).join('');
+    openSub('Reassign','Which request?',`<div class="msec" style="border:none"><div class="mstl">Select request to reassign</div><div class="pill-pick">${pills}</div></div>`);
+    return;
+  }
+  const ix=idx!==undefined?idx:0;
+  const entry=svc[ix]; if(!entry) return;
+  const sorted=[...STAFF].sort((a,b)=>a.tasks-b.tasks);
+  const items=sorted.map(s=>`
+    <div class="stf-item" onclick="raSelStaff(this,'${s.name.replace(/'/g,"\\'")}','${s.ini}')">
+      <div class="sav" style="width:30px;height:30px;font-size:11px">${s.ini}</div>
+      <div style="flex:1"><div class="stf-name">${s.name}</div><div class="stf-ld">${s.tasks} task${s.tasks!==1?'s':''}</div><div class="lbar"><div class="lbar-f" style="width:${Math.min(s.tasks/6*100,100)}%"></div></div></div>
+      ${s.name===entry.staff?'<span style="font-size:10px;color:var(--n400);font-weight:600">Current</span>':''}
+    </div>`).join('');
+  openSub('Reassign',svcLbl(entry.sub||entry.type.replace('Service Request — ','')),
+    `<div class="msec" style="border:none"><div class="mstl">Sorted by availability</div><div class="stf-list">${items}</div></div>`,
+    `<div class="cffoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" id="raCfmBtn" disabled onclick="raCfm('${num}',${ix})">Confirm</button></div>`
+  );
+  window._raStaff=null;
+};
+window.raSelStaff=function(el,name,i){
+  document.querySelectorAll('#subOv .stf-item').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel'); window._raStaff={name,i};
+  const b=document.getElementById('raCfmBtn'); if(b) b.disabled=false;
+};
+window.raCfm=function(num,ix){
+  const s=window._raStaff; if(!s) return;
+  const room=STATE.rooms[num]; if(!room||!room.svc[ix]) return;
+  const old=STAFF.find(x=>x.name===room.svc[ix].staff); if(old) old.tasks--;
+  room.svc[ix].staff=s.name; room.svc[ix].ini=s.i;
+  const ns=STAFF.find(x=>x.name===s.name); if(ns) ns.tasks++;
+  closeAll(); showToast(`✓ Reassigned to ${s.name}`); updCounts();
+};
+window.mkDone=function(num,ix){
+  const svc=STATE.rooms[num]?.svc[ix]; if(!svc) return;
+  cfmDlg(`Mark <strong>${svcLbl(svc.sub)}</strong> as done?`,`Request marked as done`,()=>{
+    const room=STATE.rooms[num];
+    const sf=STAFF.find(x=>x.name===room.svc[ix]?.staff); if(sf) sf.tasks--;
+    room.svc.splice(ix,1);
+    if(!room.svc.some(s=>s.sla)) room.sla=false;
+    rebuildIcons(room); reCard(num); updCounts();
+  });
+};
+function rebuildIcons(room){
+  const set=new Set();
+  room.svc.forEach(s=>{if(s.sub) s.sub.split(' & ').forEach(p=>{const ic=ICONS[p.trim()];if(ic)set.add(ic);});});
+  if(room.status==='hk') set.add('🧹');
+  room.icons=[...set];
+}
+
+let _ctRm='',_ctType='',_ctSubs=[];
+function ctOpen(num){_ctRm=num;_ctType='';_ctSubs=[];ctStep1();}
+function ctStep1(){
+  openSub('Create Task','Step 1 — Choose type',
+    `<div class="msec" style="border:none"><div class="opt-g">
+      <div class="opt-c" onclick="ctType('hk',this)"><div class="opt-ico">🧹</div><div class="opt-lbl">Housekeeping</div></div>
+      <div class="opt-c" onclick="ctType('svc',this)"><div class="opt-ico">🛎️</div><div class="opt-lbl">Service</div></div>
+    </div></div>`
+  );
+}
+window.ctType=function(t,el){
+  _ctType=t;
+  document.querySelectorAll('#subOv .opt-c').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  setTimeout(()=>{_ctType==='hk'?ctStep3():ctStep2();},200);
+};
+function ctStep2(){
+  _ctSubs=[];
+  openSub('Create Task','Step 2 — Service types (select all that apply)',
+    `<div class="msec" style="border:none"><div style="display:flex;flex-direction:column;gap:6px">
+      ${['AC','TV','Plumbing','Electrical'].map(sub=>`
+        <div class="multi-o" onclick="ctToggle('${sub}',this)">
+          <div style="font-size:18px;flex-shrink:0">${ICONS[sub]}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--n900)">${sub}</div>
+          <div class="chkb">✓</div>
+        </div>`).join('')}
+    </div></div>`,
+    `<div class="sfoot"><button class="btn btn-gh" onclick="ctStep1()">← Back</button><button class="btn btn-pr" id="ctN2" disabled onclick="ctStep3()">Next →</button></div>`
+  );
+}
+window.ctToggle=function(sub,el){
+  el.classList.toggle('sel');
+  const ix=_ctSubs.indexOf(sub);
+  if(ix>-1)_ctSubs.splice(ix,1); else _ctSubs.push(sub);
+  const b=document.getElementById('ctN2'); if(b) b.disabled=_ctSubs.length===0;
+};
+function ctStep3(){
+  const sorted=[...STAFF].sort((a,b)=>a.tasks-b.tasks);
+  const opts=sorted.map(s=>`<option value="${s.name}" data-ini="${s.ini}">${s.name} — ${s.tasks} task${s.tasks!==1?'s':''}</option>`).join('');
+  const step=_ctType==='hk'?'Step 2':'Step 3';
+  openSub('Create Task',`${step} — Assign staff`,
+    `<div class="msec" style="border:none"><label class="form-lbl">Assign to</label><select class="form-sel" id="ctSel"><option value="">Select staff…</option>${opts}</select></div>`,
+    `<div class="sfoot"><button class="btn btn-gh" onclick="${_ctType==='hk'?'ctStep1()':'ctStep2()'}"">← Back</button><button class="btn btn-pr" onclick="ctOK()">OK</button></div>`
+  );
+}
+window.ctOK=function(){
+  const sel=document.getElementById('ctSel'); if(!sel||!sel.value){if(sel)sel.focus();return;}
+  const sname=sel.value;
+  const sini=sel.options[sel.selectedIndex]?.dataset?.ini||ini(sname);
+  const subLbl=_ctType==='hk'?'Housekeeping':_ctSubs.join(' & ');
+  const typeLbl=_ctType==='hk'?'Housekeeping':`Service Request — ${subLbl}`;
+  cfmDlg(`Create task: <strong>${typeLbl}</strong><br>Assign to <strong>${sname}</strong>?`,`Task created — ${sname} assigned`,()=>ctApply(sname,sini,subLbl,typeLbl));
+};
+function ctApply(sname,sini,subLbl,typeLbl){
+  const room=STATE.rooms[_ctRm]; if(!room) return;
+  const sf=STAFF.find(s=>s.name===sname); if(sf) sf.tasks++;
+  if(_ctType==='hk'){
+    if(room.status!=='occupied'){
+      room.status='hk';
+      room.icons=['🧹'];
+    } else {
+      if(!room.icons.includes('🧹')) room.icons=['🧹',...room.icons];
+    }
+    room.hkTask={type:'Housekeeping',time:'Just now',staff:sname,ini:sini,pending:true};
+  } else {
+    room.svc.push({type:typeLbl,sub:subLbl,time:'Just now',staff:sname,ini:sini,sla:false});
+    _ctSubs.forEach(s=>{const ic=ICONS[s];if(ic&&!room.icons.includes(ic))room.icons.push(ic);});
+  }
+  reCard(_ctRm); updCounts();
+}
+document.getElementById('subCls').addEventListener('click',()=>closeOv('subOv'));
+document.getElementById('subOv').addEventListener('click',e=>{if(e.target===document.getElementById('subOv'))closeOv('subOv');});
+
+function openRpMdl(title,html){
+  document.getElementById('rpT').textContent=title;
+  document.getElementById('rpBody').innerHTML=html;
+  openOv('rpOv'); startSlaTimers();
+}
+
+function delayedBy(tStr){
+  const now=new Date();
+  const pm=tStr.includes('PM'); const parts=tStr.replace(' AM','').replace(' PM','').split(':');
+  let h=parseInt(parts[0]); const m=parseInt(parts[1]||0);
+  if(pm&&h!==12)h+=12; if(!pm&&h===12)h=0;
+  const then=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m);
+  const diff=Math.floor((now-then)/60000);
+  if(diff<=0) return null;
+  return diff<60?`${diff} min`:`${Math.floor(diff/60)}h ${diff%60}m`;
+}
+
+const RP={
+  sla:()=>{
+    const rows=Object.values(STATE.rooms).filter(r=>r.sla).map(r=>{
+      const s=r.svc.find(x=>x.sla)||r.svc[0];
+      return`<div class="rp-row sla-r">
+        <div class="rprm">Rm ${r.num}</div>
+        <div class="rpinfo"><div class="rp-main">${svcLbl(s?.sub||'')}</div><div class="rp-sub">Assigned: ${s?.staff||'—'}</div></div>
+        <div class="cdwn" id="sla-cd-${r.num}">…</div>
+        <div class="rp-acts">
+          <button class="btn btn-sm btn-gh" onclick="raStart('${r.num}',0)">Reassign</button>
+          <button class="btn btn-sm btn-dn" onclick="rpMkDone('${r.num}')">Mark Done</button>
+        </div>
+      </div>`;
+    }).join('');
+    return{t:'SLA Breach',h:`<div class="rp-list">${rows||'<div style="padding:20px 18px;color:var(--n400);font-size:13px">No breaches</div>'}</div>`};
+  },
+  active:()=>{
+    const rows=Object.values(STATE.rooms).filter(r=>r.svc&&r.svc.length).flatMap(r=>r.svc.map(s=>`
+      <div class="rp-row ${s.sla?'sla-r':''}">
+        <div class="rprm">Rm ${r.num}</div>
+        <div class="rpinfo"><div class="rp-main">${svcLbl(s.sub||s.type.replace('Service Request — ',''))}</div><div class="rp-sub">Assigned: ${s.staff}</div></div>
+        <div class="rp-right"><div class="rp-rv" style="color:${s.sla?'#DC2626':'var(--n600)'};font-size:12px">${s.sla?'⚠ Overdue':'Active'}</div></div>
+        <div class="rp-acts">
+          <button class="btn btn-sm btn-gh" onclick="raStart('${r.num}',0)">Reassign</button>
+          <button class="btn btn-sm btn-dn" onclick="rpMkDone('${r.num}')">Mark Done</button>
+        </div>
+      </div>`)).join('');
+    return{t:'Active Requests',h:`<div class="rp-list">${rows||'<div style="padding:20px 18px;color:var(--n400);font-size:13px">None</div>'}</div>`};
+  },
+  ci:()=>{
+    const now=new Date();
+    const rows=CI_DATA.map(r=>{
+      const pm=r.time.includes('PM'); const pts=r.time.replace(' AM','').replace(' PM','').split(':');
+      let h=parseInt(pts[0]); if(pm&&h!==12)h+=12; if(!pm&&h===12)h=0;
+      const ct=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,parseInt(pts[1]||0));
+      const delayed=now>ct;
+      return`<div class="rp-row ${delayed?'sla-r':''}">
+        <div class="rpinfo"><div class="rp-main">${r.guest}</div><div class="rp-sub">${r.phone}</div></div>
+        <div class="rp-right"><div class="rp-rs">${r.time}</div><span class="badge ${delayed?'b-del':'b-pend'}">${delayed?'Delayed':'Pending'}</span></div>
+      </div>`;
+    }).join('');
+    return{t:'Upcoming Check-ins',h:`<div class="rp-list">${rows}</div>`};
+  },
+  co:()=>{
+    const rows=CO_DATA.map(r=>`
+      <div class="rp-row">
+        <div class="rprm">Rm ${r.room}</div>
+        <div class="rpinfo"><div class="rp-main">${r.guest}</div><div class="rp-sub">${r.phone}</div></div>
+        <div class="rp-right"><div class="rp-rv">${r.time}</div><span class="badge b-pend">Pending</span></div>
+      </div>`).join('');
+    return{t:'Upcoming Check-outs',h:`<div class="rp-list">${rows}</div>`};
+  },
+  delayed:()=>{
+    const rows=DL_DATA.map(r=>{
+      const db=delayedBy(r.checkout);
+      return`<div class="rp-row sla-r">
+        <div class="rprm">Rm ${r.room}</div>
+        <div class="rpinfo"><div class="rp-main">${r.guest}</div><div class="rp-sub">${r.phone}</div></div>
+        <div class="rp-right"><div class="rp-rv" style="color:#DC2626">${db?'+'+db:'Overdue'}</div><div class="rp-rs">Was ${r.checkout}</div></div>
+      </div>`;
+    }).join('');
+    return{t:'Delayed Check-outs',h:`<div class="rp-list">${rows}</div>`};
+  },
+  staff:()=>{
+    const rows=STAFF.map(s=>`
+      <div class="rp-row">
+        <div class="sav" style="width:30px;height:30px;font-size:11px;flex-shrink:0">${s.ini}</div>
+        <div class="rpinfo"><div class="rp-main">${s.name}</div><div class="rp-sub">${s.phone}</div></div>
+        <div class="rp-right"><div class="rp-rv">${s.signin}</div><div class="rp-rs">${s.tasks} task${s.tasks!==1?'s':''}</div></div>
+      </div>`).join('');
+    return{t:'Staff Available',h:`<div class="rp-list">${rows}</div>`};
+  },
+  leave:()=>{
+    const rows=LEAVE.map(s=>`
+      <div class="rp-row">
+        <div class="sav" style="width:30px;height:30px;font-size:11px;flex-shrink:0;background:#e2e8f0;color:var(--n600)">${ini(s.name)}</div>
+        <div class="rpinfo"><div class="rp-main">${s.name}</div><div class="rp-sub">${s.phone}</div></div>
+        <div class="rp-right"><div class="rp-rv" style="color:var(--n600);font-size:12px">${s.reason}</div></div>
+      </div>`).join('');
+    return{t:'On Leave',h:`<div class="rp-list">${rows}</div>`};
+  },
+  occ:()=>{
+    const pct=Math.round(countSt('occupied')/totalR()*100);
+    return{t:'Occupancy',h:`<div style="padding:36px 24px;text-align:center"><div style="font-size:64px;font-weight:700;color:var(--g7);letter-spacing:-.03em">${pct}%</div><div style="font-size:14px;color:var(--n600);margin-top:8px">${countSt('occupied')} of ${totalR()} rooms occupied tonight</div></div>`};
+  },
+};
+
+document.querySelectorAll('.sc[data-rp]').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const key=c.dataset.rp; const fn=RP[key]; if(!fn) return;
+    const{t,h}=fn(); openRpMdl(t,h);
+  });
+});
+document.getElementById('rpCls').addEventListener('click',()=>closeOv('rpOv'));
+document.getElementById('rpOv').addEventListener('click',e=>{if(e.target===document.getElementById('rpOv'))closeOv('rpOv');});
+window.modRm=function(num){closeOv('rpOv');setTimeout(()=>openRM(num),220);};
+
+function fmtEl(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),r=s%60;return`${m}m ${String(r).padStart(2,'0')}s over`}
+function startSlaTimers(){
+  clearInterval(window._slaTmr);
+  window._slaTmr=setInterval(()=>{
+    Object.keys(SLA_START).forEach(num=>{
+      const el=document.getElementById(`sla-cd-${num}`);
+      if(el) el.textContent=fmtEl(Date.now()-SLA_START[num]);
+    });
+  },1000);
+}
+
+window.raHkTask=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const sorted=[...STAFF].sort((a,b)=>a.tasks-b.tasks);
+  const items=sorted.map(s=>`
+    <div class="stf-item" onclick="raSelStaff(this,'${s.name.replace(/'/g,"\'")}','${s.ini}')">
+      <div class="sav" style="width:30px;height:30px;font-size:11px">${s.ini}</div>
+      <div style="flex:1"><div class="stf-name">${s.name}</div><div class="stf-ld">${s.tasks} task${s.tasks!==1?'s':''}</div><div class="lbar"><div class="lbar-f" style="width:${Math.min(s.tasks/6*100,100)}%"></div></div></div>
+    </div>`).join('');
+  openSub('Reassign HK Task','Sorted by availability',
+    `<div class="msec" style="border:none"><div class="stf-list">${items}</div></div>`,
+    `<div class="cffoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" id="raCfmBtn" disabled onclick="raHkCfm('${num}')">Confirm</button></div>`
+  );
+  window._raStaff=null;
+};
+window.raHkCfm=function(num){
+  const s=window._raStaff; if(!s) return;
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const old=STAFF.find(x=>x.name===room.hkTask.staff); if(old&&old.tasks>0) old.tasks--;
+  room.hkTask.staff=s.name; room.hkTask.ini=s.i;
+  const ns=STAFF.find(x=>x.name===s.name); if(ns) ns.tasks++;
+  closeAll(); showToast('✓ HK task reassigned to '+s.name); updCounts();
+};
+window.mkHkDone=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  cfmDlg(`Mark housekeeping as done for Room ${num}?`,`Housekeeping marked as done`,()=>{
+    const sf=STAFF.find(x=>x.name===room.hkTask.staff); if(sf&&sf.tasks>0) sf.tasks--;
+    room.hk={time:'Just now',staff:room.hkTask.staff,ini:room.hkTask.ini};
+    room.hkTask=null;
+    if(room.status==='hk') room.status='vacant';
+    room.icons=room.icons.filter(ic=>ic!=='🧹');
+    rebuildIcons(room); reCard(num); updCounts();
+  });
+};
+
+window.rpMkDone=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.svc||!room.svc.length) return;
+  if(room.svc.length===1){
+    const svc=room.svc[0];
+    cfmDlg(`Mark <strong>${svcLbl(svc.sub)}</strong> as done for Room ${num}?`,`Request marked as done`,()=>{
+      const sf=STAFF.find(x=>x.name===svc.staff); if(sf) sf.tasks--;
+      room.svc.splice(0,1);
+      if(!room.svc.some(s=>s.sla)) room.sla=false;
+      rebuildIcons(room); reCard(num); updCounts();
+    });
+  } else {
+    const pills=room.svc.map((s,i)=>`<button class="pill" onclick="rpMkDoneIdx('${num}',${i})">${svcLbl(s.sub)}</button>`).join('');
+    openSub('Mark Done','Which request?',`<div class="msec" style="border:none"><div class="mstl">Select request to mark done</div><div class="pill-pick">${pills}</div></div>`);
+  }
+};
+window.raHkTask=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const sorted=[...STAFF].sort((a,b)=>a.tasks-b.tasks);
+  const items=sorted.map(s=>`
+    <div class="stf-item" onclick="raSelStaff(this,'${s.name.replace(/'/g,"\'")}','${s.ini}')">
+      <div class="sav" style="width:30px;height:30px;font-size:11px">${s.ini}</div>
+      <div style="flex:1"><div class="stf-name">${s.name}</div><div class="stf-ld">${s.tasks} task${s.tasks!==1?'s':''}</div><div class="lbar"><div class="lbar-f" style="width:${Math.min(s.tasks/6*100,100)}%"></div></div></div>
+    </div>`).join('');
+  openSub('Reassign HK Task','Sorted by availability',
+    `<div class="msec" style="border:none"><div class="stf-list">${items}</div></div>`,
+    `<div class="cffoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" id="raCfmBtn" disabled onclick="raHkCfm('${num}')">Confirm</button></div>`
+  );
+  window._raStaff=null;
+};
+window.raHkCfm=function(num){
+  const s=window._raStaff; if(!s) return;
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  const old=STAFF.find(x=>x.name===room.hkTask.staff); if(old&&old.tasks>0) old.tasks--;
+  room.hkTask.staff=s.name; room.hkTask.ini=s.i;
+  const ns=STAFF.find(x=>x.name===s.name); if(ns) ns.tasks++;
+  closeAll(); showToast('✓ HK task reassigned to '+s.name); updCounts();
+};
+window.mkHkDone=function(num){
+  const room=STATE.rooms[num]; if(!room||!room.hkTask) return;
+  cfmDlg(`Mark housekeeping as done for Room ${num}?`,`Housekeeping marked as done`,()=>{
+    const sf=STAFF.find(x=>x.name===room.hkTask.staff); if(sf&&sf.tasks>0) sf.tasks--;
+    room.hk={time:'Just now',staff:room.hkTask.staff,ini:room.hkTask.ini};
+    room.hkTask=null;
+    if(room.status==='hk') room.status='vacant';
+    room.icons=room.icons.filter(ic=>ic!=='🧹');
+    rebuildIcons(room); reCard(num); updCounts();
+  });
+};
+
+window.rpMkDoneIdx=function(num,ix){
+  const room=STATE.rooms[num]; if(!room||!room.svc[ix]) return;
+  const svc=room.svc[ix];
+  cfmDlg(`Mark <strong>${svcLbl(svc.sub)}</strong> as done for Room ${num}?`,`Request marked as done`,()=>{
+    const sf=STAFF.find(x=>x.name===svc.staff); if(sf) sf.tasks--;
+    room.svc.splice(ix,1);
+    if(!room.svc.some(s=>s.sla)) room.sla=false;
+    rebuildIcons(room); reCard(num); updCounts();
+  });
+};
+
+window.openCheckinModal=function(num){
+  const todayGuests=CI_DATA.map((g,i)=>`
+    <div class="stf-item" onclick="ciSelGuest(this,${i},'${num}')">
+      <div class="sav" style="width:30px;height:30px;font-size:11px">${g.guest.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="flex:1"><div class="stf-name">${g.guest}</div><div class="stf-ld">${g.phone} · ${g.time}</div></div>
+    </div>`).join('');
+  openSub('Check-in',`Room ${num}`,
+    `<div class="msec" style="border:none">
+      <div class="mstl">Select from today's arrivals</div>
+      <div class="stf-list" id="ciGuestList">${todayGuests}</div>
+      <div style="margin:12px 0;display:flex;align-items:center;gap:8px"><div style="flex:1;height:1px;background:var(--n200)"></div><span style="font-size:11px;color:var(--n400)">or enter manually</span><div style="flex:1;height:1px;background:var(--n200)"></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div><label class="form-lbl">Guest name</label><input id="ciName" class="form-sel" type="text" placeholder="Full name"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label class="form-lbl">No. of guests</label><input id="ciPax" class="form-sel" type="number" min="1" value="1" style="width:100%"></div>
+          <div><label class="form-lbl">Check-out date</label><input id="ciCoDate" class="form-sel" type="date" style="width:100%"></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="sfoot"><button class="btn btn-gh" onclick="closeOv('subOv')">Cancel</button><button class="btn btn-pr" onclick="ciOK('${num}')">OK</button></div>`
+  );
+  window._ciRoom=num; window._ciGuest=null;
+};
+window.ciSelGuest=function(el,idx,num){
+  document.querySelectorAll('#ciGuestList .stf-item').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  window._ciGuest=CI_DATA[idx];
+  const g=CI_DATA[idx];
+  document.getElementById('ciName').value=g.guest;
+  document.getElementById('ciPax').value=g.pax||1;
+  if(g.checkout) document.getElementById('ciCoDate').value=g.checkout;
+  window._ciGuestIdx=idx;
+};
+window.ciOK=function(num){
+  const name=(document.getElementById('ciName').value||'').trim();
+  const pax=parseInt(document.getElementById('ciPax').value)||1;
+  const coDate=document.getElementById('ciCoDate').value;
+  if(!name){document.getElementById('ciName').focus();return;}
+  const coStr=coDate?new Date(coDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'  · 11:00':'TBD';
+  window._ciMeta={name,pax,coStr};
+  cfmDlg(`Check in <strong>${name}</strong> (${pax} pax) to Room <strong>${num}</strong>?`,`${name} checked in to Room ${num}`,()=>{
+    const room=STATE.rooms[num];
+    room.status='occupied'; room.guest=name; room.members=pax;
+    room.checkin=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' · '+fmtTime();
+    room.checkout=coStr; room.icons=[]; room.hkTask=null;
+    // Remove checked-in guest from CI_DATA
+    if(window._ciGuestIdx!==undefined){
+      CI_DATA.splice(window._ciGuestIdx,1);
+      window._ciGuestIdx=undefined;
+      // Update right panel CI card count
+      const ciCard=document.querySelector('.sc[data-rp="ci"] .sc-val');
+      if(ciCard) ciCard.textContent=CI_DATA.length;
+    }
+    reCard(num); updCounts();
+  });
+};
+
+buildGrid();
+updCounts();
+updRefresh();
+updClock();
+setInterval(updRefresh,60000);
+setInterval(updClock,1000);
+document.querySelector('.fbtn[data-s="occupied"]').click();
+</script>
+</body>
+</html>
